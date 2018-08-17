@@ -1,0 +1,40 @@
+Set up Standalone HVM with kernel ""
+Allocate memory
+Check allocated IP address : qvm-ls -n
+
+Boot:
+qvm-start HVM --cdrom=iso:/home/user/iso/nixos.iso
+
+At root prompt:
+systemctl stop netwpork-manager
+ifconfig -a
+ifconfig eth0 10.137.0.16 
+ifconfig eth0 up
+route add default gw 10.137.0.6
+echo nameserver 9.9.9.9 >> /etc/resolv.conf
+
+Disks:
+cfdisk /dev/xvda
+Configure disks as required: simplest case would be dos, with one partition in /dev/xvda1
+Swap at /dev/xvda2
+
+mkfs.ext4 -L root /dev/xvda1
+mkswap -L swap /dev/xvda2
+
+mount /dev/disk/by-label/root /mnt
+swapon /dev/disk/by-label/swap
+
+nixos-generate-config --root /mnt
+vi /mnt/etc/nixos/configuration.nix
+
+nixos-install
+
+Watch the system download package and install in /mnt
+Set root password
+adduser user
+passwd user
+Reboot
+
+On restart Choose new configuration.
+
+
