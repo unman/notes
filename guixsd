@@ -1,0 +1,35 @@
+Set up Standalone HVM with kernel ""
+Allocate memory
+Check allocated IP address : qvm-ls -n
+
+Boot:
+qvm-start HVM --cdrom=iso:/home/user/iso/guixsd.iso
+
+At root prompt:
+ifconfig -a
+ifconfig eth0 10.137.0.16 
+ifconfig eth0 up
+route add default gw 10.137.0.6
+echo nameserver 9.9.9.9 >> /etc/resolv.conf
+
+Disks:
+cfdisk /dev/xvda
+Configure disks as required: simplest case would be dos, with one partition in /dev/xvda1
+No swap
+
+mkfs.ext4 -L root /dev/xvda1
+
+mount LABEL=root /mnt
+herd start cow-store /mnt
+mkdir /mnt/etc
+cp /etc/configuration/desktop.scm /mnt/etc/config.scm
+
+Edit /mnt/etc/config.scm to match requirements:
+In particular, check LABEL
+
+guix system init /mnt/etc/config.scm /mnt
+
+Watch the system download package and install in /mnt
+Reboot
+
+
