@@ -1,0 +1,16 @@
+A simple mailcap file:
+
+save as ~/.config/mailcap
+========================
+image/*; qvm-open-in-dvm  %s
+application/msword; qvm-open-in-dvm  %s 
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; qvm-open-in-dvm  %s 
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; qvm-open-in-dvm  %s 	
+application/vnd.openxmlformats-officedocument.presentationml.presentation; qvm-open-in-dvm  %s
+applica/vnd.openxm qvm-open-in-dvm  %s 
+application/vnd.ms-excel; qvm-open-in-dvm  %s 
+text/html;  qvm-open-in-dvm  %s
+text/html;  w3m -I %{charset} -T text/html; copiousoutput;
+application/postscript; qvm-open-in-dvm  %s 
+application/pdf; qvm-open-in-dvm  %s 
+========================
