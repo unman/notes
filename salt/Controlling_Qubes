@@ -1,0 +1,45 @@
+It's relatively easy to control and configure Qubes using batch scripts,
+and the dom0 tools.
+
+Qubes also provides 'qubesctl' which allows you to use salt for the same
+purpose.
+You describe how you want the system to work in a .sls file.
+Then you provide a .top file which describes the target you want to
+configure, and which states to apply.
+You enable the state.
+Then you apply it to the system
+
+To enable a state:
+qubesctl top.enable <foo>
+
+To disable a state:
+qubesctl top.disable <foo>
+
+To see what states are enabled:
+qubesctl top.enabled
+
+To apply state:
+qubesctl --target <bar> state.apply
+
+Instead of naming targets, you can use
+qubesctl --templates .... to target all templates
+qubesctl --app .... to target all AppVms
+qubesctl --all .... to target all non-disposable VMs
+
+Let's look at some simple examples:
+
+To create a new template cloned from debian-9 template:
+examples/clone.sls
+clone.top shows the target is dom0:
+the state to be applied is described in clone.sls
+
+Enable the new state
+qubesctl top.enable clone
+
+And apply it:
+qubesctl --target dom0 state.apply
+
+You see the results.
+Confirm that the new template has been created.
+
+
