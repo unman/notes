@@ -30,7 +30,30 @@ Or make the top file combine a number of different states:
 browser.top
 
 
+You may have already hit a problem.
+You need to create the qube tbb before you can set preferences.
 
+A simple way to do this is using requirements:
+- require:
+  - <condition>
+
+And you can also pull in the content of another sls.file using:
+- include:
+  - <foo>
+
+So at the top of prefs.sls put:
+- include:
+  - create
+
+And in the state include a requirement statement:
+qvm-prefs-id:
+  qvm.prefs:
+    - require:
+      - sls: create
+    - name: tbb
+    - netvm: sys-firewall
+
+(Actually you can often get by just using an "include" statement, without the require.)
 
 
 
