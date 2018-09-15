@@ -1,0 +1,40 @@
+Create a new qube using the browser template.
+
+create.sls
+
+NB qvm.present will create a qube if it does not yet exist, and will set properties.
+
+qvm.prefs will change properties of an existing qube.
+
+prefs.sls
+
+qvm.features will set the features for target domains, and enable or disable services 
+
+features.sls
+
+When using qvm.features to work on services the format is:
+	- enable:
+		- service.cups
+OR
+	- disable:
+		- service.cups
+
+It's longwinded to work though like this.
+So you can combine in to a single state definition:
+
+create_prefs.sls
+
+
+Or make the top file combine a number of different states:
+
+browser.top
+
+
+
+
+
+
+
+
+
+
