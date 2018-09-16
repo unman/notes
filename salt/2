@@ -31,13 +31,13 @@ browser.top
 
 
 You may have already hit a problem.
-You need to create the qube tbb before you can set preferences.
+You need to create the tbb qube before you can set preferences for it.
 
 A simple way to do this is using requirements:
 - require:
   - <condition>
 
-And you can also pull in the content of another sls.file using:
+You can pull in the content of another sls.file using:
 - include:
   - <foo>
 
@@ -53,11 +53,5 @@ qvm-prefs-id:
     - name: tbb
     - netvm: sys-firewall
 
-(Actually you can often get by just using an "include" statement, without the require.)
-
-
-
-
-
-
-
+(Actually you can often get by just using an "include" statement, without
+the "require".)

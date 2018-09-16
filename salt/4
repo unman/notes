@@ -1,0 +1,47 @@
+Now that tbb has been created, make sure it is up to date.
+
+Salt has a module named 'pkg' to work with package managers.
+pkg will try to do the right thing whether it's apt, dnf, or pacman.
+
+update-browser.sls
+
+That makes it easy to update the template.
+
+
+What about updating *all* the templates?
+
+update-templates.sls
+
+The only new thing here is the way the target is set in the top file.
+Qubes provides a special module, (a pillar in salt terms), which predefines
+some useful targets.
+qubes:type:template 
+qubes:type:standalone
+qubes:type:app
+
+You can use these in your own salt files.
+
+
+You can use pkg to install, remove, and purge packages. Because it's
+agnostic about the package manager, that makes it easy to work on
+templates regardless of OS.
+
+To remove firefox from the browser template:
+remove.sls
+
+Of course, you can use pkg to install (or remove) multiple packages:
+multiple.sls
+
+And you can specify particular versions of packages to be installed:
+versions.sls
+
+If you remove a package, then packages that were installed with it
+will not be removed. (This is normal behaviour on Debian.)
+On Debian, I suggest running 'apt-get autoremove' to clear these extra
+packages. (There is a module for aptpkg control, but in my experience
+the results are not good.)
+
+How do you run a command in a qube using salt?
+Like this:
+
+autorm.sls

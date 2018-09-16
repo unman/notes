@@ -1,0 +1,24 @@
+All this top.enable, state.apply and top.disable may seem excessive.
+There's an easier way to run state files. 
+You can apply a state in dom0 like this:
+qubesctl state.sls <foo>
+
+By combining states in to one top file, you can clone a template
+and create a qube based on it with one command.
+
+Alternatively you can combine all the states in to one sls file:
+allinone.sls
+
+If you look at the files in /srv/formulas/base/virtual-machines-formula/qvm,
+you can see how this works for the default qubes.
+
+You'll see a difference between those files and allinone.sls.
+Those files use a template, which simplifies the specification of states.
+Otherwise, most of the detail in those files should look very familiar
+now.
+
+You can include that template in your own files if you wish.
+
+So far there's nothing that couldn't have been done using dom0 qvm tools:
+qvm-clone, qvm-create and qvm-prefs.
+You *could* do this using a batch file.
