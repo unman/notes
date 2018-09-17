@@ -1,0 +1,2 @@
+firefox-esr:
+  pkg.removed
