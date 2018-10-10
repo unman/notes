@@ -21,4 +21,4 @@ You can include that template in your own files if you wish.
 
 So far there's nothing that couldn't have been done using dom0 qvm tools:
 qvm-clone, qvm-create and qvm-prefs.
-You *could* do this using a batch file.
+You *could* do this using a shell script.

@@ -1,4 +1,4 @@
-It's relatively easy to control and configure Qubes using batch scripts,
+It's relatively easy to control and configure Qubes using shell scripts,
 and the dom0 tools.
 
 Qubes also provides 'qubesctl' which allows you to use salt for the same
