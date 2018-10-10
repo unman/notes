@@ -1,0 +1,73 @@
+The cmd state module is basic to salt, and allows you to specify commands to
+be executed.
+
+You have just seen a simple example.
+
+You can also use this structure:
+
+<Command>:
+  cmd.run
+
+The cmd module allows for use of some controls.
+
+You can run a command conditionally:
+
+date > /home/user/dated:
+  cmd.run:
+    - onlyif: 'data +%A|grep Monday'
+
+The condition is evaluated ON THE TARGET MACHINE.
+Also, the cmd module is intended to be primarily non-interactive, although
+it is possible to make states and scripts stateful.
+
+You can make the command conditional on a failure:
+date > /home/user/dated:
+  cmd.run:
+    - unless: 'data +%A|grep Monday'
+
+This will run on any day EXCEPT Mondays.
+
+And there's a builtin test to avoid overwriting a file:
+
+date > /home/user/dated:
+  cmd.run:
+    - creates: /home/user/dated
+
+This will run only if /home/user/dated does not already exist.
+
+
+Of course, Qubes provides a tool to run commands on qubes: qvm-run .
+There's a special module which provides the functionality of qvm-run inside
+salt.
+Here's an example:
+
+qvm-run-id:
+  qvm.run:
+    - name: tbb
+    - cmd: xterm
+    - user: user
+
+This will run xterm on the target. Note that the target qube is
+automatically started and the salt command doesnt return until the
+application is closed.
+The target qube remains Running.
+
+You can also use flags, like this:
+- flags:
+    - pass-io
+    - tray
+    - auto
+
+What if you want something just a little more complicated? With spaces?
+Something like "date > /home/user/dated" or "systemctl restart apache2"
+
+You need to escape the space, and provide the command as a list, like this:
+qvm-run-id:
+  qvm.run:
+    - name: tbb
+    - cmd: ["date\\ >\\ /home/user/dated"]
+    - user: user
+
+I've included qvm.run for completeness.
+In almost every case it will be easier to use the qvm-run command: loop over
+targets in a script if needed.
