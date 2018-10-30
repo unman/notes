@@ -2,26 +2,46 @@ Install OpenBSD as HVM Template
 Create netvm "openFW" using OpenBSD as template.
 Set openFW virt_mode to HVM
 Attach network device to openFW.
-Note IP address of openFW from 'qvm-ls -n openFW'
 
 Create netvm - fw
+
+Make sure that fw does not have netvm set:
+qvm-prefs fw netvm none
+
 Set fw as netvm for openFW.
+qvm-prefs openFW netvm fw
+
+Note IP address of openFW from 'qvm-ls -n openFW' 
+Here address is 10.137.0.6
 
 Start fw and openFW.
 
 On fw netvm:
-Identify vif to openFW - route -n will show vifXX.0
-Add route to default gw 10.137.0.6
-iptables -t raw -I PREROUTING -i vifXX.0 -j ACCEPT
+Identify vif to openFW - 
+'ip route ' will show vifXX.0
+Here output is "10.137.0.6 dev vif33.0....."
 
-iptables -I FORWARD -i vif+ -o vif+ -j ALLOW
+Add route to default gw 10.137.0.6:
+ip route add default via 10.137.0.6
+
+Configure forwarding on fw:
+iptables -I FORWARD -i vif+ -o vif+ -j ACCEPT
+(This allows all qubes connected to fw to interact - you may wish to be more
+restrictive.)
+
+Override Qubes restrictions:
+iptables -t raw -I PREROUTING -i vif33.0 -j ACCEPT
+
+Forward DNS traffic to external DNS server:
 iptables -t nat -I PR-QBS -p udp --dport 53 -j DNAT --to 9.9.9.9
-(Put these in /rw/config/qubes-firewall-user-script 
-chmod +x /config/qubes-firewall-user-script )
 
-On openFW:
+(Put these in /rw/config/qubes-firewall-user-script
+ chmod +x /config/qubes-firewall-user-script )
+
+
+On openFW congiguration is more straightforward.
 Run firewall script
 Bring up em0 - dhclient em0
 ifconfig xnf0 10.137.0.6 up
 
-Set qubes to use fw as netvm
+Set qubes to use fw as netvm using qvm-prefs
