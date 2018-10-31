@@ -1,0 +1,24 @@
+We've seen two methods for running commands with qubesctl: cmd.run and
+qvm.run
+Salt has native functions for all sorts of commands.
+'qubesctl sys.doc' will give you a long list of functions showing the
+fucntions and documentation. Pipe the output through more to read more
+easily.
+
+Let's say we want to untar a file.
+We could use cmd.run or qvm.run, or run qvm-run from dom0.
+
+Or we can use the builtin salt function, archive.tar .
+
+untar.sls
+
+Notice how we can specify tar options, and alos options for running the
+command.
+
+Of course, we can create archives using tar as well.
+
+tar.sls
+
+The archive function can handle zip, tar, rar, and zip, and can work with
+encrypted files.
+'qubesctl sys.doc archive' will give more detail.
