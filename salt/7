@@ -1,0 +1,25 @@
+We've seen simpple examples.
+Here's agood case where using salt comes in to its own.
+We want to run a command but we need the program to be installed on the
+target.
+Using salt it's simple:
+
+untar2.sls
+
+Notice how we used "order" to make sure that states are handled in the order
+we want.
+Salt actually has a pretty good mechanism for dealing with states, but you
+can always use "order" or "requisites" to make sure that things run as you
+want.
+Remember that 'pkg' will work with any flavour of template and will use the
+native package handler.
+
+When the file is on the target system everyhtign works fine.
+What if it isnt there?
+That's odd - we still get "OK"
+Let's look at the log : it's in /var/log/qubes/mgmt-browser.log
+
+We see the error reported in the log.
+So remember, when using qubesctl you should check the log and not trust the
+command output.
+That's the biggest issue in using qubesctl at the moment.
