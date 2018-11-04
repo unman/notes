@@ -1,0 +1,33 @@
+In that last example, the file to untar was already on the target system.
+Can we put a file on the target?
+In dom0 you could use 'qvm-copy-to-vm'.
+
+In salt you can copy a file like this:
+
+filecopy.sls
+
+Let's unpack this a bit.
+The first line determines what the file will be named on the target.
+The source is salt://testfile
+What does that mean?
+The statement is relative to /srv/salt if you are using 'base', so qubesctl
+will be looking for a file at /srv/salt/testfile.
+You can create a directory under /srv/salt - /srv/salt/browser - and store
+the file there.
+Then the source should refer to salt://browser/testfile
+
+It's good to keep things tidy.
+You can keep sls and top files in subdirectories too - If you move
+filecopy.sls to /srv/salt/browser you can reference it as browser.filecopy
+
+This makes it easier to make sure that names are unique *and* easier to keep
+track of your files.
+
+You can give a list of sources, and the first one found will be used.
+
+Using file.managed is like pkg.installed: it will ensure that the file in
+present on the target qube.
+
+
+
+
