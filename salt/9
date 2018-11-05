@@ -1,0 +1,19 @@
+We've seen a simple use of the file module with file.managed to get files on
+the target system.
+
+You can use file.absent to ensure that a file is *not* present. (If it is it
+will be deleted.)
+
+You can copy files using file.copy:
+
+copy.sls
+
+Rename files usign file.rename:
+
+rename.sls
+
+See how we use "Force" to make sure than existing files are overwritten?
+
+The file module also works on directories, and has file.directory:
+
+dir.sls

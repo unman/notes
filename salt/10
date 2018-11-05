@@ -1,0 +1,49 @@
+The file module also lets us do some basic editing.
+The states are pretty obvious:
+file.line, file.comment, file.append, file.prepend, file.uncomment
+
+The syntax isnt always so obvious.
+
+Let's look at an example:
+
+edit.sls
+
+The Mode statemt has to be included:
+ensure  - you have to specify "before" or "after"
+replace
+delete
+insert - you have to specify "before", "after", or "location"
+
+Location:
+start
+end
+
+Before:
+After:
+You can use exact fragments of a string *or* use regex
+
+And of course we can set:
+user
+group
+and file permissions using file_mode.
+And produce a backup file by setting 'backup: True'
+
+
+The other editing options are as easy to use:
+append/prepend
+comment/uncomment - here you can specify the comment character to use, and
+whether to keep a backup.
+Again, we can use a regex to specify the lines to be edited.
+
+comment.sls
+
+What if we want to insert more than one line?
+One way is to feed multiple lines liek this:
+
+edit6.sls
+
+Another method is to use file.blockreplace - this allows you to mark out
+sections of a file and work within them.
+Like this:
+
+block.sls
