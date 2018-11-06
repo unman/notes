@@ -8,7 +8,7 @@ You can copy files using file.copy:
 
 copy.sls
 
-Rename files usign file.rename:
+Rename files using file.rename:
 
 rename.sls
 
@@ -17,3 +17,20 @@ See how we use "Force" to make sure than existing files are overwritten?
 The file module also works on directories, and has file.directory:
 
 dir.sls
+
+There's a lot going on here: let's unpack it.
+The first few lines should be obvious, somewhat similar to how we handle
+files.
+Of course, as it's a directory we can set permissions at directory and file
+level.
+recurse - allows us to set permissions and ownership recursively.
+makedirs - like using "mkdir -p" this will create parent directories as
+needed.
+force: If there's a *file* with the name you want to use, then "force" will
+remove that file and create a directory instead.
+backupname - allows you to backup the overwritten file.
+
+There are still more options available, but that's enough to get started.
+In older versions of salt, these were handled as separate states -
+file..mkdir, file.makedirs_perms etc . You may still see this in
+documentation.
