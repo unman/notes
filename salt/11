@@ -1,0 +1,75 @@
+Recap on targeting.
+
+In the editing example we were targeting one qube.
+We specified it in the top file and also in the call to qubesctl.
+qubesctl --targets browser state.apply
+
+We can use salt to control *man* qubes.
+We've already seen this when updating templates. One call to qubesctl will update
+*all* the templates. (try to).
+
+Let's look at how this works, using filecopy. 
+
+filecopy.top
+
+Instead of specifying browser, we can use a wild card:
+
+base:
+  brows*:
+  - filecopy
+
+Remember how we can target qubesctl?
+When updating templates, we used '--templates' - we can also use '-- apps'.
+
+See what happened? We iterated over every appVM, and skipped those that
+didnt match browse*
+Not very efficient.
+Even though the top file contains a wildcard, we can target specific qubes:
+
+qubesctl --targets browser3,browser4 state.apply
+
+
+You may be wondering why we dont always use a wildcard in the top file?
+Why not just have:
+
+base:
+  '*':
+  - filecopy
+
+(Notice that * has to be quoted)
+That works fine, and we can limit the targets using --targets..
+
+Why not do this all the time?
+Risk management.
+
+What else can we specify in top file?
+Remember for updating templates we used this:
+base:
+  qubes:type:template:
+  - match: pillar
+
+There are other types we can use here:
+qubes:type:admin
+qubes:type:standalone
+qubes:type:app
+
+type:admin can be used for dom0 or for an adminVM.
+
+If you use --targets and it doesn't match the qubes:type in the top file,
+then salt will SKIP.
+
+Salt also provides a mechanism for getting and using information about the
+underlying qubes. It's called "grains" because it provides grains of
+information.
+Using grains allows for very precise targeting, but it's well outside our
+scope here.
+
+
+
+
+
+
+
+
+
+
