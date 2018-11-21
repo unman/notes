@@ -61,8 +61,7 @@ then salt will SKIP.
 Salt also provides a mechanism for getting and using information about the
 underlying qubes. It's called "grains" because it provides grains of
 information.
-Using grains allows for very precise targeting, but it's well outside our
-scope here.
+Using grains allows for very precise targeting.
 
 
 

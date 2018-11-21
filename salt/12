@@ -1,0 +1,46 @@
+Grains are bits of information about the underlying system, which can be
+used in salt.
+
+Here's a simple example.
+Let's say we wanted to copy a file to a qubes, but only if the qube was based on
+Debian.
+
+Let's create two test qubes, based on different templates, using salt.
+create_test.sls
+
+Now we can use grains to target the debian based qube, and copy a specific
+file to it:
+
+grain1.sls
+qubesctl --targets test1,test2 state.apply
+
+If you look at test1, you'll see there's a zero length file created there.
+That's because the file is *managed*, but we didnt specify a source.
+
+Let's unpack that sls:
+{% if grains['os_family']|lower == 'debian' %}
+
+We get the value of os_family , make it lowercase, and check if it matches
+'debian'.
+Simple.
+
+Of course, we can use elif, and else as well.
+
+grain2.sls
+
+That starts to look like something that could be useful.
+
+There are many grains - you can see what's available by running:
+salt-call --local grains.ls
+
+The ones you're most likely to use in Qubes are -
+id: maps to qube name
+os: e.g Debian
+os_family: e.g Debian
+oscodename: e.g. stretch
+
+But these might be useful too:
+
+locale_info:
+ip4_interfaces:
+virtual_subtype: Xen PV DomU
