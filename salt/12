@@ -14,7 +14,7 @@ file to it:
 grain1.sls
 qubesctl --targets test1,test2 state.apply
 
-If you look at test1, you'll see there's a zero length file created there.
+If you look at test2, you'll see there's a zero length file created there.
 That's because the file is *managed*, but we didnt specify a source.
 
 Let's unpack that sls:
