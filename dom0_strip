@@ -1,0 +1,29 @@
+rpm -qa --queryformat '%10{size} - %25{name}\n'|sort -h
+
+6.4G
+67037624
+
+NetworkManager
+guile
+python2-numpy
+webkitgtk4-jsc
+libicu
+webkitgtk4
+
+6458248
+
+adobe-source-han-sans-cn-fonts
+adobe-source-han-sans-tw-fonts
+
+6364092
+
+200M in /usr/share/locale
+72M in /usr/share/fonts
+70M in /usr/share/doc
+
+protected:
+poppler-data
+ghostscript-core
+
+debian-9 package:
+root.img 2.9G - 10G
