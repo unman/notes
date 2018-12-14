@@ -1,0 +1,19 @@
+Environment Group: Qubes OS with Xfce
+ Description: Standard installation with Xfce enviroment in Dom0.
+ Mandatory Groups:
+   Base
+   Extra plugins for the Xfce panel
+   Fonts
+   Hardware Support
+   Multimedia support for Xfce
+   Qubes Environment
+   Sound basic support
+   X Window System
+   Xfce
+ Optional Groups:
+   Debian 9 (stretch) template
+   Whonix
+
+
+
+Qubes Environment:
