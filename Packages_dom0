@@ -14,6 +14,23 @@ Environment Group: Qubes OS with Xfce
    Debian 9 (stretch) template
    Whonix
 
+Group: Qubes Environment
+ Mandatory Packages:
+   kernel
+   kernel-qubes-vm
+   qubes-artwork
+   qubes-core-dom0
+   qubes-desktop-linux-common
+   qubes-desktop-linux-manager
+   qubes-gui-dom0
+   qubes-mgmt-salt-dom0
+   qubes-template-fedora-29
+ Default Packages:
+   libvirt-client
+   qubes-gpg-split-dom0
+   qubes-img-converter-dom0
+   qubes-input-proxy
+   qubes-pdf-converter-dom0
+   qubes-usb-proxy-dom0
 
-
-Qubes Environment:
+Check builder/qubes-src/installer-qubes-os/qubes-release/comps-qubes.xml
