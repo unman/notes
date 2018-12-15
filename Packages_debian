@@ -15,3 +15,8 @@ Gimp?
 Scribus?
 Audacity?
 Brasero?
+
+
+Make sure we have qvm-convert tools and add tool for converting docs via
+libreoffice.
+Consider MAT?
