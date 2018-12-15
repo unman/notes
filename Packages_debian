@@ -6,15 +6,14 @@ OTR
 Enigmail?
 Veracrypt
 
-LibreWriter
-LibreCalc
-SimpleScan
+LibreWriter LibreCalc 307 - 311
+simple-scan 3
 
 Possible, but check size and memory:
-Gimp?
-Scribus?
-Audacity?
-Brasero?
+gimp? 94M - 
+scribus? 66 - 70
+audacity? 77 - 90
+brasero? 23 - 31
 
 
 Make sure we have qvm-convert tools and add tool for converting docs via
