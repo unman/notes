@@ -1,0 +1,66 @@
+Using apt-cacher-ng as caching proxy.
+
+1.  INSTALL AND CONFIGURE
+apt-get install apt-cacher-ng, and mask in the template.
+systemctl mask apt-cacher-ng 
+
+Create qube and give it plenty of space.
+
+In caching qube, use bind-dirs:
+binds+=( '/var/cache/apt-cacher-ng' )
+binds+=( '/var/log/apt-cacher-ng' )
+binds+=( '/etc/apt-cacher-ng' )
+
+Use /rw/config/rc.local to start the apt-cacher-ng service:
+systemctl unmask apt-cacher-ng
+systemctl start apt-cacher-ng
+/sbin/iptables -I INPUT -p tcp --dport 8082 -j ACCEPT
+
+Edit /etc/apt-cacher-ng/acng.conf:
+Port:8082 
+
+Restart service.
+
+Set this as updateProxy in /etc/qubes-rpc/policy/qubes.UpdatesProxy
+
+Debian templates will use this for updates with no further configuration.
+
+
+2.  FEDORA SUPPORT for build machines.
+There is a mirrors list in /usr/lib/apt-cacher-ng/
+Copy fedora_mirrors to /etc/apt-cacher-ng
+
+Edit /etc/apt-cacher-ng/acng.conf:
+Remap-fedora: file:fedora_mirrors
+
+If requests fail because the file type is not allowed, create a pattern for
+volatile data:
+VfilePatternEx: .*metalink?repo=fedora*
+
+
+3.  TLS SUPPORT:
+Two methods:
+a. 
+Create new file in /etc/apt-cacher-ng/backends_qubes:
+https://yum.qubes-os.org/
+
+Edit /etc/apt-cacher-ng/acng.conf:
+Remap-qubes: http://fake.qubes ; file:backends_qubes
+
+Then in /etc/yum/yum.repos.d, change the repository URL to
+http://fake.qubes/......
+
+Now the qube will use HTTP to the proxy which will use TLS to pick up the
+packages and cache any responses.
+
+b.
+Change the repository definition FROM:
+https://yum.qubes-os.org/
+TO:
+http://HTTPS///yum.qubes-os.org/
+
+Without any other changes to the apt-cacher configuration the qube will
+use HTTP to the proxy which will use TLS to pick up the packages and
+cache any responses.
+
+This is the recommended approach.
