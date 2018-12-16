@@ -1,0 +1,30 @@
+export DEBIAN_FRONTEND=noninteractive
+
+Suppress confirmation prompts using 'apt -y'
+
+Conffile differences:
+--force-confdef
+--force-confold
+--force-confnew
+Apply these using -o
+
+If the package requires information it's possible to preseed debconf:
+Need the package name, the confdb key, and type of answer.
+echo <package> <key> <value> | debconf-set-selections
+
+Can do this for license acceptance. Necessary for automation of template
+builds, which otherwise fail if input is required.
+For example, firmware-ipw2x00 requires acceptance of license before
+installation.
+apt download firmware-ipw2x00 
+ar x firmware-ipw2x00_20161130-4_all.deb
+tar zxf control.tar.gz
+The key can be found in preinst in the check:
+db_get firmware-ipw2x00/license/accepted
+
+(Alternatively install package in qube, and use debconf-get-selections to
+find the relevant keys)
+
+In template building:
+  chroot_cmd sh -c 'echo "debconf firmware-ipw2x00/license/accepted select true" | debconf-set-selections'
+  aptInstall firmware-ipw2x00
