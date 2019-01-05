@@ -1,0 +1,22 @@
+Let's take a minute to recap what we've seen so far.
+
+We can use salt to create qubes, set preferences, install and remove
+software, and configure them down to the file system level.
+
+Qubes has a special configuration of salt, and provides 'qubesctl' to run
+salt commands.
+We can use all the available salt modules and functions.
+
+We can target commands at individual qubes, type of qube (Template,
+standalone, TemplateBased), and, by using grains, at qubes sharing
+characteristics.
+
+After the break we'll start to put this together in to real life examples.
+
+Remember, once you've put the effort in to writing the modules, you can
+adapt and recreate your system with very little overhead.
+That means you can take a clean Qubes install, pull down some modules and,
+after some salt magic, have your personal qubes configured just the way you
+like them - software and preferences intact. I'm sure you can see the
+benefits for travel.
+

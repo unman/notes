@@ -1,0 +1,13 @@
+Controlling_Qubes
+2  - Creating qubes and setting preferences.
+3  - Applying states: combining states.
+4  - Package management.
+5  - Running commands.
+6  - Native functions.
+7  - Ordering states and defining requisites.
+8  - Copying files to qubes.
+9  - Managing files and directories.
+10 - Editing files.
+11 - Targeting - types,targets and grains.
+12 - Grains of salt.
+13 - Summary and recap.
