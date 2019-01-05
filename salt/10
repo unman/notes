@@ -2,13 +2,13 @@ The file module also lets us do some basic editing.
 The states are pretty obvious:
 file.line, file.comment, file.append, file.prepend, file.uncomment
 
-The syntax isnt always so obvious.
+The syntax isn't always so obvious.
 
 Let's look at an example:
 
 edit.sls
 
-The Mode statemt has to be included:
+The Mode statement has to be included:
 ensure  - you have to specify "before" or "after"
 replace
 delete
@@ -43,7 +43,7 @@ You can omit "char" as '#' will be used by default
 
 
 What if we want to insert more than one line?
-One way is to feed multiple lines liek this:
+One way is to feed multiple lines like this:
 
 edit6.sls
 

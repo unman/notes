@@ -17,7 +17,7 @@ the file there.
 Then the source should refer to salt://browser/testfile
 
 It's good to keep things tidy.
-You can keep sls and top files in subdirectories too - If you move
+You can keep sls and top files in sub-directories too - If you move
 filecopy.sls to /srv/salt/browser you can reference it as browser.filecopy
 
 This makes it easier to make sure that names are unique *and* easier to keep

@@ -23,7 +23,7 @@ qubesctl --target <bar> state.apply
 
 Instead of naming targets, you can use
 qubesctl --templates .... to target all templates
-qubesctl --app .... to target all AppVms
+qubesctl --app .... to target all AppVMs
 qubesctl --all .... to target all non-disposable VMs
 
 Let's look at some simple examples:

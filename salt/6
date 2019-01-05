@@ -2,7 +2,7 @@ We've seen two methods for running commands with qubesctl: cmd.run and
 qvm.run
 Salt has native functions for all sorts of commands.
 'qubesctl sys.doc' will give you a long list of functions showing the
-fucntions and documentation. Pipe the output through more to read more
+functions and documentation. Pipe the output through more to read more
 easily.
 
 Let's say we want to untar a file.
@@ -12,7 +12,7 @@ Or we can use the builtin salt function, archive.tar .
 
 untar.sls
 
-Notice how we can specify tar options, and alos options for running the
+Notice how we can specify tar options, and also options for running the
 command.
 
 Of course, we can create archives using tar as well.

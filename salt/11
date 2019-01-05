@@ -22,14 +22,14 @@ Remember how we can target qubesctl?
 When updating templates, we used '--templates' - we can also use '-- apps'.
 
 See what happened? We iterated over every appVM, and skipped those that
-didnt match browse*
+didn't match browse*
 Not very efficient.
 Even though the top file contains a wildcard, we can target specific qubes:
 
 qubesctl --targets browser3,browser4 state.apply
 
 
-You may be wondering why we dont always use a wildcard in the top file?
+You may be wondering why we don't always use a wildcard in the top file?
 Why not just have:
 
 base:

@@ -1,5 +1,5 @@
-We've seen simpple examples.
-Here's agood case where using salt comes in to its own.
+We've seen a simple examples.
+Here's a good case where using salt comes in to its own.
 We want to run a command but we need the program to be installed on the
 target.
 Using salt it's simple:
@@ -14,8 +14,8 @@ want.
 Remember that 'pkg' will work with any flavour of template and will use the
 native package handler.
 
-When the file is on the target system everyhtign works fine.
-What if it isnt there?
+When the file is on the target system everything works fine.
+What if it isn't there?
 That's odd - we still get "OK"
 Let's look at the log : it's in /var/log/qubes/mgmt-browser.log
 

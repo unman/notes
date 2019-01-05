@@ -48,7 +48,7 @@ qvm-run-id:
     - user: user
 
 This will run xterm on the target. Note that the target qube is
-automatically started and the salt command doesnt return until the
+automatically started and the salt command doesn't return until the
 application is closed.
 The target qube remains Running.
 
