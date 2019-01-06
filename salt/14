@@ -1,0 +1,49 @@
+We're going to use the basic things we've seen so far, and put them together
+to show how you can use salt in Qubes to control and set-up qubes.
+Just to repeat - salt can be very complex and we are only scratching the
+surface here. But for most of the work you want to do in Qubes this will be
+enough.
+
+Let's start with a simple example.
+
+I have Qubes installed on a USB - handy for travelling.
+But the basic Qubes install gives a sys-net which uses PCI devices from the
+install machine, and which autostarts. I don't want this.
+What's the answer?
+
+Let's create a sys-net with no devices attached, and which doesn't start when
+Qubes boots. (Of course that means that NO qubes which are network attached
+have to be set to autostart.)
+
+What else? Well, lets have this sys-net restricted so that no outbound
+traffic is allowed by default. And we want to have MAC spoofing set by
+default on all interfaces.
+If there's no outbound traffic originating from this qube then we need to
+disable some services.
+
+Let's create the new qube.
+Notice I've created a new directory to hold the relevant  files.
+
+sys-net.sys-net.sls
+
+Then configure it - we'll use bind-dirs to keep the MAC spoofing set, and
+run a firewall script from rc.local and qubes-firewall-user-script.
+
+iptables.sh
+30-mac-random.conf
+
+copy.sls
+edit.sls
+
+Notice that we need to make sure that the /rw/config/qubes-bind-dirs.d
+directory exists - file.directory does that for us.
+Oh, and we need to make sure that the rc.local and
+qubes-firewall-user-script files are executable, so they actually run.
+file.managed can do that.
+
+perms1.sls
+
+Let's try to run that, and check the logs.
+So - in perms we cant use the same heading(ID) that we used in edit:
+we need to make a small change:
+perms.sls
