@@ -1,0 +1,32 @@
+Let's look at another example.
+
+I want to extend the Debian template and have two qubes, one online and one
+offline.
+
+extend.sls
+
+I use salt as a convenient way to keep track of what packages I've installed
+in templates. If you do this, then you need never wonder about what you
+installed, or have to think back to recreate your accidentally deleted
+template.
+All you need to do is pull down your salt file, and recreate the template.
+
+Now we have the template let's create those qubes:
+
+online.sls
+offline.sls
+
+One thing we can do with an offline qube, is use it as basis for the default
+disposableVM.
+And it would  be useful if we made sure that any files we have are
+opened in those offline disposableVMs.
+
+mailcap.sls
+defaults.sls
+
+Usually, the rule is not to transfer files from an untrusted qube to a
+(more) trusted one.
+But if we have a work qube based on a minimal template then we can transfer
+files to it and store them there, and we can do this (relatively ) safely
+because we will never open the files in that qube. Instead we will always
+open them in an offline, fully featured, disposable qube.
