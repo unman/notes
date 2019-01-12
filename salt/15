@@ -4,11 +4,14 @@ Perhaps we want to make the same change to sys-firewall.
 Because of the way we structured the module, we cant do this. So we should
 rewrite it so that we can apply the changes separately.
 
-copy1
-copy2
+copy_mac
+edit_mac
 
-So we apply the firewall change using copy1 and the MAC change using
-copy2. Both are targeted to sys-net and just copy1 to sys-firewall.
+copy_fw
+edit_fw
+
+So we apply the firewall change using copy_fw and the MAC change using
+copy_mac. Both are targeted to sys-net and just copy_mac to sys-firewall.
 
 Of course, we could have structured the file to apply different parts of it
 to different qubes:
@@ -18,4 +21,3 @@ copy3
 You can do whatever works best for you, and what you feel happy with.
 Breaking down changes and grouping similar effects together generally makes
 it easier to reuse code. 
-
