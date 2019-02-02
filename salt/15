@@ -17,7 +17,16 @@ Of course, we could have structured the file to apply different parts of it
 to different qubes:
 
 copy3
+Remember we can use grains 'id' to idetify targets and structure the file.
+Notice that we are using 'sys-*' as the target in the top file, so it will
+apply to sys-net and sys-firewall.
+
+Call it like this:
+qubesctl --targets sys-firewall,sys-net sys-net.copy3
+
 
 You can do whatever works best for you, and what you feel happy with.
 Breaking down changes and grouping similar effects together generally makes
 it easier to reuse code. 
+The names we have used arent very clear - you should name modules and group
+them so it's easy to know what they do.
