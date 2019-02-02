@@ -1,0 +1,4 @@
+base:
+  sys-*:
+  - sys-net.copy_fw
+  - sys-net.copy_mac
