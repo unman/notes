@@ -50,9 +50,9 @@ Use case | Description | Required steps
 **Standard utilities** | If you need the commonly used utilities | Install the following packages: `pciutils` `vim-minimal` `less` `psmisc` `gnome-keyring`
 **Networking** | If you want networking | Install qubes-core-agent-networking
 **Audio** | If you want sound from your VM... | Install `pulseaudio-qubes`
-CHECK**FirewallVM** | You can use the minimal template as a [FirewallVM](/doc/firewall/), such as the basis template for `sys-firewall` | Install at least `qubes-core-agent-networking`, and also `qubes-core-agent-dom0-updates` if you want to use it as the updatevm (which is normally sys-firewall).
-**NetVM** | You can use this template as the basis for a NetVM such as `sys-net` | Install the following packages:  `qubes-core-agent-networking` `qubes-core-agent-network-manager`
-**NetVM (extra firmware)** | If your network devices need extra packages for the template to work as a network VM | Use the `lspci` command to identify the devices, then run `apt search firmware` (replace `firmware` with the appropriate device identifier) to find the needed packages and then install them.
+**FirewallVM** | You can use the minimal template as a template for a [FirewallVM](/doc/firewall/), like `sys-firewall` | Install `qubes-core-agent-networking`, and `nftables`.  Also install `qubes-core-agent-dom0-updates` if you want to use it as the template for an updateVM (normally sys-firewall).
+**NetVM** | You can use this template as the basis for a NetVM such as `sys-net` | Install the following packages:  `qubes-core-agent-networking`, `qubes-core-agent-network-manager`, and `nftables`.  
+**NetVM (extra firmware)** | If your network devices need extra packages for the template to work as a network VM | Use the `lspci` command to identify the devices, then find the package that provides necessary firnware and install it.
 **Network utilities** | If you need utilities for debugging and analyzing network connections | Install the following packages: `tcpdump` `telnet` `nmap` `nmap-ncat`
 CHECK**USB** | If you want USB input forwarding to use this template as the basis for a [USB](/doc/usb/) qube such as `sys-usb` | Install `qubes-input-proxy-sender`
 **VPN** | You can use this template as basis for a [VPN](/doc/vpn/) qube | Use the `apt search "NetworkManager VPN plugin"` command to look up the VPN packages you need, based on the VPN technology you'll be using, and install them. Some GNOME related packages may be needed as well. After creation of a machine based on this template, follow the [VPN howto](/doc/vpn/#set-up-a-proxyvm-as-a-vpn-gateway-using-networkmanager) to configure it.
@@ -98,4 +98,3 @@ In Qubes 4.0, additional packages from the `qubes-core-agent` suite may be neede
 - `qubes-core-agent-dom0-updates`: Script required to handle `dom0` updates. Any template which the VM responsible for 'dom0' updates (e.g. `sys-firewall`) is based on must contain this package.
 - `qubes-usb-proxy`: Required if the template is to be used for a USB qube (`sys-usb`) or for any destination qube to which USB devices are to be attached (e.g `sys-net` if using USB network adapter).
 - `pulseaudio-qubes`: Needed to have audio on the template VM.
-
