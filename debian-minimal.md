@@ -7,11 +7,11 @@ permalink: /doc/templates/debian-minimal/
 Debian - minimal
 ================
 
-The template only weighs about 200 MB compressed (0.75 GB on disk) and has only the most vital packages installed, including a minimal X and xterm installation.
-The minimal template, however, can be easily extended to fit your requirements. The sections below contain the instructions on duplicating the template and provide some examples for commonly desired use cases.
+The template weighs about 200 MB compressed (0.75 GB on disk) and has only the most vital packages installed, including a minimal X and xterm installation.
+The minimal template, however, can be easily extended to fit your requirements.
+The sections below contain the instructions on duplicating the template and provide some examples for commonly desired use cases.
 
-Note that use of the minimal template requires some familiarity with the
-command line and basics of Qubes.
+Note that use of the minimal template requires some familiarity with the command line and basics of Qubes.
 
 Installation
 ------------
@@ -27,7 +27,9 @@ The download may take a while depending on your connection speed.
 Duplication and first steps
 ---------------------------
 
-It is highly recommended that you clone the original template, and make any changes in the clone instead of the original template. The following command clones the template. Replace `your-new-clone` with your desired name.
+It is highly recommended that you clone the original template, and make any changes in the clone instead of the original template. 
+The following command clones the template. 
+(Replace `your-new-clone` with your desired name.)
 
 ~~~
 [user@dom0 ~]$ qvm-clone debian-9-minimal your-new-clone
@@ -41,7 +43,8 @@ Customization
 Customizing the template for specific use cases normally only requires installing additional packages.
 The following table provides an overview of which packages are needed for which purpose.
 
-As you would expect, the required packages can be installed in the running template with any apt-based command. For example : (Replace "packages` with a space-delimited list of packages to be installed.)
+As you would expect, the required packages can be installed in the running template with any apt-based command. 
+For example : (Replace "packages` with a space-delimited list of packages to be installed.)
 
 ~~~
 [user@your-new-clone ~]$ sudo apt install packages
@@ -82,11 +85,12 @@ Use case | Description | Required steps
 **NetVM** | You can use this template as the basis for a NetVM such as `sys-net` | Install the following packages:  `qubes-core-agent-networking`, `qubes-core-agent-network-manager`, and `nftables`.  
 **NetVM (extra firmware)** | If your network devices need extra packages for a network VM | Use the `lspci` command to identify the devices, then find the package that provides necessary firnware and install it.
 **Network utilities** | If you need utilities for debugging and analyzing network connections | Install the following packages: `tcpdump` `telnet` `nmap` `nmap-ncat`
-**USB** | If you want to use this template as the basis for a [USB](/doc/usb/) qube such as `sys-usb` | Install qubes-usb-proxy`. To use USB mouse or keyboard install `qubes-input-proxy-sender`.
+**USB** | If you want to use this template as the basis for a [USB](/doc/usb/) qube such as `sys-usb` | Install `qubes-usb-proxy`. To use USB mouse or keyboard install `qubes-input-proxy-sender`.
 **VPN** | You can use this template as basis for a [VPN](/doc/vpn/) qube | Use the `apt search "NetworkManager VPN plugin"` command to look up the VPN packages you need, based on the VPN technology you'll be using, and install them. Some GNOME related packages may be needed as well. After creation of a machine based on this template, follow the [VPN howto](/doc/vpn/#set-up-a-proxyvm-as-a-vpn-gateway-using-networkmanager) to configure it.
  
 
-In Qubes 4.0, additional packages from the `qubes-core-agent` suite may be needed to make the customized minimal template work properly. These packages are:
+In Qubes 4.0, additional packages from the `qubes-core-agent` suite may be needed to make the customized minimal template work properly. 
+These packages are:
 
 - `qubes-core-agent-nautilus`: This package provides integration with the Nautilus file manager (without it, items like "copy to VM/open in disposable VM" will not be shown in Nautilus).
 - `qubes-core-agent-thunar`: This package provides integration with the thunar file manager (without it, items like "copy to VM/open in disposable VM" will not be shown in thunar).
@@ -112,7 +116,4 @@ Also, there are packages to provide additional services:
 
 Documentation on all of these can be found in the [docs](/doc)
 
-You could, of course, use qubes-vm-recommended to automatically install many
-of these, but in that case you are well on the way to a standard debian
-template.
-
+You could, of course, use qubes-vm-recommended to automatically install many of these, but in that case you are well on the way to a standard debian template.
