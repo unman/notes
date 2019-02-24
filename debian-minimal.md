@@ -10,6 +10,9 @@ Debian - minimal
 The template only weighs about 200 MB compressed (0.75 GB on disk) and has only the most vital packages installed, including a minimal X and xterm installation.
 The minimal template, however, can be easily extended to fit your requirements. The sections below contain the instructions on duplicating the template and provide some examples for commonly desired use cases.
 
+Note that use of the minimal template requires some familiarity with the
+command line and basics of Qubes.
+
 Installation
 ------------
 
@@ -92,9 +95,6 @@ In Qubes 4.0, additional packages from the `qubes-core-agent` suite may be neede
 - `qubes-core-agent-network-manager`: Integration for NetworkManager. Useful if the template is to be used for a `sys-net` VM.
 - `network-manager-applet`: Useful (together with `dejavu-sans-fonts` and `notification-daemon`) to have a system tray icon if the template is to be used for a `sys-net` VM.
 - `qubes-core-agent-dom0-updates`: Script required to handle `dom0` updates. Any template which the VM responsible for 'dom0' updates (e.g. `sys-firewall`) is based on must contain this package.
-- `qubes-usb-proxy`: Required if the template is to be used as basis for a USB qube (`sys-usb`) or for any destination qube to which USB devices are to be attached (e.g `sys-net` if using USB network adapter).
-- `qubes-input-proxy-sender`: Required if the template is to be used as basis for a USB qube (`sys-usb`) to which mouse of keyboard will be attached. 
-- `pulseaudio-qubes`: Needed to have audio on the template VM.
 - `qubes-menus`: Defines menu layout.
 - `qubes-desktop-linux-common`: Contains icons and scripts to improve desktop experience.
 - `qubes-desktop-linux-common`: Contains icons and scripts to improve desktop experience.
@@ -102,11 +102,17 @@ In Qubes 4.0, additional packages from the `qubes-core-agent` suite may be neede
 
 Also, there are packages to provide additional services:
 - `qubes-gpg-split`: For implementing split GPG.
+- `qubes-u2f`: For implementing secure forwarding of U2F messages.
 - `qubes-pdf-converter`: For implementing safe conversion of PDFs.
-- `qubes-mgmt-\*`: If you want to use salt managements on the template and qubes.
+- `qubes-image-converter`: For implementing safe conversion of images.
 - `qubes-snapd-helper`: If you want to use snaps in qubes.
 - `qubes-thunderbird`: Additional tools for use in thunderbird.
 - `qubes-app-shutdown-idle`: If you want qubes to automatically shutdown when idle.
+- `qubes-mgmt-\*`: If you want to use salt management on the template and qubes.
 
 Documentation on all of these can be found in the [docs](/doc)
+
+You could, of course, use qubes-vm-recommended to automatically install many
+of these, but in that case you are well on the way to a standard debian
+template.
 
