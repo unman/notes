@@ -38,27 +38,11 @@ Customization
 Customizing the template for specific use cases normally only requires installing additional packages.
 The following table provides an overview of which packages are needed for which purpose.
 
-As you would expect, the required packages should be installed in the running template with the following command. (Replace "packages` with a space-delimited list of packages to be installed.)
+As you would expect, the required packages can be installed in the running template with any apt-based command. For example : (Replace "packages` with a space-delimited list of packages to be installed.)
 
 ~~~
 [user@your-new-clone ~]$ sudo apt install packages
 ~~~
-### Package table for Qubes 4.0
-
-Use case | Description | Required steps
---- | --- | ---
-**Standard utilities** | If you need the commonly used utilities | Install the following packages: `pciutils` `vim-minimal` `less` `psmisc` `gnome-keyring`
-**Networking** | If you want networking | Install qubes-core-agent-networking
-**Audio** | If you want sound from your VM... | Install `pulseaudio-qubes`
-**FirewallVM** | You can use the minimal template as a template for a [FirewallVM](/doc/firewall/), like `sys-firewall` | Install `qubes-core-agent-networking`, and `nftables`.  Also install `qubes-core-agent-dom0-updates` if you want to use it as the template for an updateVM (normally sys-firewall).
-**NetVM** | You can use this template as the basis for a NetVM such as `sys-net` | Install the following packages:  `qubes-core-agent-networking`, `qubes-core-agent-network-manager`, and `nftables`.  
-**NetVM (extra firmware)** | If your network devices need extra packages for the template to work as a network VM | Use the `lspci` command to identify the devices, then find the package that provides necessary firnware and install it.
-**Network utilities** | If you need utilities for debugging and analyzing network connections | Install the following packages: `tcpdump` `telnet` `nmap` `nmap-ncat`
-CHECK**USB** | If you want USB input forwarding to use this template as the basis for a [USB](/doc/usb/) qube such as `sys-usb` | Install `qubes-input-proxy-sender`
-**VPN** | You can use this template as basis for a [VPN](/doc/vpn/) qube | Use the `apt search "NetworkManager VPN plugin"` command to look up the VPN packages you need, based on the VPN technology you'll be using, and install them. Some GNOME related packages may be needed as well. After creation of a machine based on this template, follow the [VPN howto](/doc/vpn/#set-up-a-proxyvm-as-a-vpn-gateway-using-networkmanager) to configure it.
- 
-CHECKA comprehensive guide to customizing the minimal template is available [here][GUIDE]
-
 
 Qubes 4.0
 ---------
@@ -84,17 +68,45 @@ Optionally check this worked: from the gui open the minimal template's xterm and
 
 which should give you output that includes the NOPASSWD keyword.
 
+### Package table for Qubes 4.0
+
+Use case | Description | Required steps
+--- | --- | ---
+**Standard utilities** | If you need the commonly used utilities | Install the following packages: `pciutils` `vim-minimal` `less` `psmisc` `gnome-keyring`
+**Networking** | If you want networking | Install qubes-core-agent-networking
+**Audio** | If you want sound from your VM... | Install `pulseaudio-qubes`
+**FirewallVM** | You can use the minimal template as a template for a [FirewallVM](/doc/firewall/), like `sys-firewall` | Install `qubes-core-agent-networking`, and `nftables`.  Also install `qubes-core-agent-dom0-updates` if you want to use a qube based on the template as an updateVM (normally sys-firewall).
+**NetVM** | You can use this template as the basis for a NetVM such as `sys-net` | Install the following packages:  `qubes-core-agent-networking`, `qubes-core-agent-network-manager`, and `nftables`.  
+**NetVM (extra firmware)** | If your network devices need extra packages for a network VM | Use the `lspci` command to identify the devices, then find the package that provides necessary firnware and install it.
+**Network utilities** | If you need utilities for debugging and analyzing network connections | Install the following packages: `tcpdump` `telnet` `nmap` `nmap-ncat`
+**USB** | If you want to use this template as the basis for a [USB](/doc/usb/) qube such as `sys-usb` | Install qubes-usb-proxy`. To use USB mouse or keyboard install `qubes-input-proxy-sender`.
+**VPN** | You can use this template as basis for a [VPN](/doc/vpn/) qube | Use the `apt search "NetworkManager VPN plugin"` command to look up the VPN packages you need, based on the VPN technology you'll be using, and install them. Some GNOME related packages may be needed as well. After creation of a machine based on this template, follow the [VPN howto](/doc/vpn/#set-up-a-proxyvm-as-a-vpn-gateway-using-networkmanager) to configure it.
+ 
 
 In Qubes 4.0, additional packages from the `qubes-core-agent` suite may be needed to make the customized minimal template work properly. These packages are:
 
-- `qubes-core-agent-qrexec`: Qubes qrexec agent. Installed by default.
-- `qubes-core-agent-systemd`: Qubes unit files for SystemD init style. Installed by default.
-- `qubes-core-agent-passwordless-root`, `polkit`: By default the 'fedora-27-minimal' template doesn't have passwordless root. These two packages enable this feature. (Note from R4.0 a design choice was made that passwordless should be optional, so is left out of the minimal templates)
-- `qubes-core-agent-nautilus`: This package provides integration with the Nautilus file manager (without it things like "copy to VM/open in disposable VM" will not be shown in Nautilus).
+- `qubes-core-agent-nautilus`: This package provides integration with the Nautilus file manager (without it, items like "copy to VM/open in disposable VM" will not be shown in Nautilus).
+- `qubes-core-agent-thunar`: This package provides integration with the thunar file manager (without it, items like "copy to VM/open in disposable VM" will not be shown in thunar).
 - `qubes-core-agent-sysvinit`: Qubes unit files for SysV init style or upstart.
 - `qubes-core-agent-networking`: Networking support. Required for general network access and particularly if the template is to be used for a `sys-net` or `sys-firewall` VM.
 - `qubes-core-agent-network-manager`: Integration for NetworkManager. Useful if the template is to be used for a `sys-net` VM.
 - `network-manager-applet`: Useful (together with `dejavu-sans-fonts` and `notification-daemon`) to have a system tray icon if the template is to be used for a `sys-net` VM.
 - `qubes-core-agent-dom0-updates`: Script required to handle `dom0` updates. Any template which the VM responsible for 'dom0' updates (e.g. `sys-firewall`) is based on must contain this package.
-- `qubes-usb-proxy`: Required if the template is to be used for a USB qube (`sys-usb`) or for any destination qube to which USB devices are to be attached (e.g `sys-net` if using USB network adapter).
+- `qubes-usb-proxy`: Required if the template is to be used as basis for a USB qube (`sys-usb`) or for any destination qube to which USB devices are to be attached (e.g `sys-net` if using USB network adapter).
+- `qubes-input-proxy-sender`: Required if the template is to be used as basis for a USB qube (`sys-usb`) to which mouse of keyboard will be attached. 
 - `pulseaudio-qubes`: Needed to have audio on the template VM.
+- `qubes-menus`: Defines menu layout.
+- `qubes-desktop-linux-common`: Contains icons and scripts to improve desktop experience.
+- `qubes-desktop-linux-common`: Contains icons and scripts to improve desktop experience.
+
+
+Also, there are packages to provide additional services:
+- `qubes-gpg-split`: For implementing split GPG.
+- `qubes-pdf-converter`: For implementing safe conversion of PDFs.
+- `qubes-mgmt-\*`: If you want to use salt managements on the template and qubes.
+- `qubes-snapd-helper`: If you want to use snaps in qubes.
+- `qubes-thunderbird`: Additional tools for use in thunderbird.
+- `qubes-app-shutdown-idle`: If you want qubes to automatically shutdown when idle.
+
+Documentation on all of these can be found in the [docs](/doc)
+
