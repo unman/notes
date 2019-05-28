@@ -9,9 +9,9 @@ Debian - minimal
 
 The template weighs about 200 MB compressed (0.75 GB on disk) and has only the most vital packages installed, including a minimal X and xterm installation.
 The minimal template, however, can be easily extended to fit your requirements.
-The sections below contain the instructions on duplicating the template and provide some examples for commonly desired use cases.
+The sections below contain instructions on duplicating the template and provide examples of commonly desired use cases.
 
-Note that use of the minimal template requires some familiarity with the command line and basics of Qubes.
+Note that use of the minimal template requires some familiarity with the command line, and with the basics of Qubes.
 
 Installation
 ------------
@@ -19,7 +19,7 @@ Installation
 The Debian minimal template can be installed with the following command:
 
 ~~~
-[user@dom0 ~]$ sudo qubes-dom0-update qubes-template-debian-9-minimal
+[user@dom0 ~]$ sudo qubes-dom0-update --enablerepo=qubes-templates-itl-testing qubes-template-debian-9-minimal
 ~~~
 
 The download may take a while depending on your connection speed.
@@ -44,7 +44,7 @@ Customizing the template for specific use cases normally only requires installin
 The following table provides an overview of which packages are needed for which purpose.
 
 As you would expect, the required packages can be installed in the running template with any apt-based command. 
-For example : (Replace "packages` with a space-delimited list of packages to be installed.)
+For example : (Replace "packages" with a space-delimited list of packages to be installed.)
 
 ~~~
 [user@your-new-clone ~]$ sudo apt install packages
@@ -53,12 +53,14 @@ For example : (Replace "packages` with a space-delimited list of packages to be 
 Qubes 4.0
 ---------
 
-In Qubes R4.0 the minimal template is not configured for passwordless root.  To update or install packages to it, from a dom0 terminal window run:
+In Qubes R4.0 the minimal template is not configured for passwordless root.  
+To update or install packages, in a dom0 terminal window run:
 
 ~~~
 [user@dom0 ~]$ qvm-run -u root debian-9-minimal xterm
 ~~~
-to open a root terminal in the template, from which you can use apt tools without sudo. You will have to do this every time you want root access if you choose not to enable passwordless root. 
+to open a root terminal in the template, from which you can use apt tools without sudo. 
+You will have to do this every time you want root access if you choose not to enable passwordless root. 
 
 If you want the usual qubes `sudo ...` commands, open the root terminal using the above command, and in the root xterm window enter
 
@@ -66,7 +68,7 @@ If you want the usual qubes `sudo ...` commands, open the root terminal using th
 bash-4.4# apt install qubes-core-agent-passwordless-root polkit
 ~~~
 
-Optionally check this worked: from the gui open the minimal template's xterm and give the command
+Optionallyi, check this worked: from the gui open the minimal template's xterm and give the command:
 
 ~~~
 [user@debian-9-minimal ~]$ sudo -l

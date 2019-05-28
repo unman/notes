@@ -1,0 +1,15 @@
+Picking up the rump kernel.
+
+Some issues with compiling on Fedora-29 with gcc 8.3.1
+try suppressing warning in build of buildrump.sh:
+./buildrump.sh -F CWARNFLAGS='-Wno-error=cast-function-type -Wimplicit-fallthrough=0'
+                                      
+~                                                                                
+~                                                                                
+~                                                                                
+~                                          
+                                      
+~                                                                                
+~                                           
+
+
