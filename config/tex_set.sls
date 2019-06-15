@@ -10,5 +10,6 @@ installed:
       - notmuch
       - offlineimap
       - mb2md
+      - w3m
       - texlive-latex-base
       - texlive-latex-base-doc
