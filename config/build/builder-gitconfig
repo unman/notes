@@ -1,0 +1,16 @@
+[user]
+	name = NAME
+	email = EMAIL
+	signingkey = KEY
+
+[credential]
+	helper = cache
+
+[commit]
+	gpgsign = true
+
+[gpg]
+	program = qubes-gpg-client-wrapper
+
+[alias]
+  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
