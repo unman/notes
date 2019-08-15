@@ -3,21 +3,13 @@ include:
 
 remove:
   qvm.absent:
-    - name: sys-usb
+    - names: 
+      - sys-usb
+      - sys-usb-dock
+      - sys-usb-left
+      - sys-usb-dvm
 
-remove2:
-  qvm.absent:
-    - name: sys-usb-dock
-
-remove3:
-  qvm.absent:
-    - name: sys-usb-left
-
-remove4:
-  qvm.absent:
-    - name: sys-usb-dvm
-
-qvm-present-id:
+sys-usb-dvm:
   qvm.present:
     - name: sys-usb-dvm
     - template: template-sys-usb
@@ -34,88 +26,47 @@ qvm-prefs-id:
     - template_for_dispvms: True
     - include_in_backups: false
 
-sys-usb:
+{% set usbs = ['sys-usb','sys-usb-dock','sys-usb-left'] %}
+{% for usb in usbs %}
+{{usb}}:
   qvm.present:
-    - name: sys-usb
+    - name: 
+      - {{usb}}
     - template: sys-usb-dvm
     - class: DispVM
     - label: red
 
-sys-usb-prefs:
+{{usb}}-prefs:
   qvm.prefs:
-    - name: sys-usb
+    - name: {{usb}}
     - autostart: false
     - include_in_backups: false
+    - pci_strictreset: False
+    {% if usb == 'sys-usb' %}
     - pcidevs: [ '00:1a.0' ]
-    - pci_strictreset: False
-
-qvm-features-id:
-  qvm.features:
-    - name: sys-usb
-    - disable:
-      - service.cups
-      - service.cups-browsed
-      - service.meminfo-writer
-      - service.cups-browsed
-      - service.qubes-updates-proxy
-
-sys-usb-dock:
-  qvm.present:
-    - name: sys-usb-dock
-    - template: sys-usb-dvm
-    - class: DispVM
-    - label: red
-
-sys-usb-dock-prefs:
-  qvm.prefs:
-    - name: sys-usb-dock
-    - autostart: false
-    - include_in_backups: false
-    - pcidevs: [ '00:1d.0' ]
-    - pci_strictreset: False
-
-sys-usb-dock-features:
-  qvm.features:
-    - name: sys-usb-dock
-    - disable:
-      - service.cups
-      - service.cups-browsed
-      - service.meminfo-writer
-      - service.qubes-updates-proxy
-
-sys-usb-left:
-  qvm.present:
-    - name: sys-usb-left
-    - template: sys-usb-dvm
-    - class: DispVM
-    - label: red
-
-sys-usb-left-prefs:
-  qvm.prefs:
-    - name: sys-usb-left
-    - autostart: false
-    - include_in_backups: false
+    {% elif usb == 'sys-usb-left' %}
     - pcidevs: [ '00:14.0' ]
-    - pci_strictreset: False
+    {% elif usb == 'sys-usb-dock' %}
+    - pcidevs: [ '00:1d.0' ]
+    {% endif %}
 
-sys-usb-left-features:
+{{usb}}-features:
   qvm.features:
-    - name: sys-usb-left
+    - name: {{usb}}
     - disable:
       - service.cups
       - service.cups-browsed
       - service.meminfo-writer
       - service.cups-browsed
       - service.qubes-updates-proxy
+
+{% endfor%}
 
 update_file:
   file.prepend:
-    - name: /etc/qubes-rpc/policy/qubes.InputMouse
+    - names:
+        - /etc/qubes-rpc/policy/qubes.InputMouse
+        - /etc/qubes-rpc/policy/qubes.InputKeyboard
     - text: sys-usb dom0 allow,user=root
     - text: sys-usb-dock dom0 allow,user=root
 
-update_file_keyboard:
-  file.prepend:
-    - name: /etc/qubes-rpc/policy/qubes.InputKeyboard
-    - text: sys-usb dom0 allow,user=root 
-    - text: sys-usb-dock dom0 allow,user=root
