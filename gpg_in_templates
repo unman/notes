@@ -1,0 +1,61 @@
+Since templates are not network connected, you may think you cant use gpg to get keys.  
+But there's a proxy listening on :8082, normally used to pull donw packages using qrexec.  
+This is a standard "using gpg behid firewall" problem, and the solution is to use that proxy.  
+
+Here's a script:  
+Save it as get_key  
+
+```
+#!/usr/bin/sh
+if [ $# != 1 ]
+then
+echo "need a search term"
+exit
+fi
+
+#wget "https://hkps.pool.sks-keyservers.net/pks/lookup?op=vindex&search=$1" -e use_proxy=on -e https_proxy=127.0.0.1:8082 -O $1  --ca-certificate=./sks-keyservers.netCA.pem
+wget "https://keyserver.ubuntu.com/pks/lookup?op=get&search=$1" -e use_proxy=on -e https_proxy=127.0.0.1:8082 -O $1
+
+```
+An advantage of using a keyserver like keyserver.ubuntu.com is that you can use a search term and it will return *all* keys using that term.  
+
+So `get_key unman` will fetch keys and store them in `unman`.
+
+```
+$ get_key unman
+
+$ gpg unman
+pub   rsa4096 2017-05-30 [SC] [expires: 2021-05-30]
+      E47A3C9B80B38CDD48BD56F7BB52274595B71262
+uid           unman (Qubes Documentation Signing Key) <unman@thirdeyesecurity.org>
+pub   rsa4096 2018-12-01 [SC] [expires: 2019-12-01]
+      B8E0DC8D08D05BD9058E5DBC9EEB56F58DCD0076
+uid           unmannedclunk <unmanned@clunk.com>
+sub   rsa4096 2018-12-01 [E] [expires: 2022-12-01]
+pub   rsa4096 2016-06-29 [SC]
+      C6E2533D976E4B29A82B79CB0C6D15D5E0A9816E
+uid           unman <unman@thirdeyesecurity.org>
+sub   rsa4096 2016-06-29 [S] [expired: 2019-06-30]
+sub   rsa4096 2016-06-29 [E] [expired: 2019-06-30]
+pub   dsa1024 1998-03-14 [SCA]
+      EBA254DE9DDA1AAA2E1518328F7DB6A2D3CDDB6E
+uid           Paul Petersen <unman@ix.netcom.com>
+sub   elg3072 1998-03-14 [E]
+pub   rsa4096 2016-06-25 [SC]
+      4B1F400DF25651B53C4141B38B3F30F9C8C0C2EF
+uid           unman (Qubes OS signing key) <unman@thirdeyesecurity.org>
+sub   rsa4096 2016-06-27 [S] [expires: 2020-06-30]
+sub   rsa4096 2016-06-25 [E]
+```
+You can import them all, or:  
+`get-key 0x4B1F400DF25651B53C4141B38B3F30F9C8C0C2EF` will fetch the specific key.  
+`gpg --import 0x4B1F400DF25651B53C4141B38B3F30F9C8C0C2EF` 
+
+
+hkps.pool.sks-keyservers.net **doesnt** work like this.  
+Using a search term returns the web page, which you have to parse to get the fingerprint you want.  
+Note that `hkps.pool.sks-keyservers.net` uses a certificate which you have to supply.
+
+
+
+
