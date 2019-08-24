@@ -1,6 +1,6 @@
-Since templates are not network connected, you may think you cant use gpg to get keys.  
-But there's a proxy listening on :8082, normally used to pull donw packages using qrexec.  
-This is a standard "using gpg behid firewall" problem, and the solution is to use that proxy.  
+Since templates are not network connected, you may think you can't use gpg to get keys.  
+But there's a proxy listening on :8082: normally used to pull down packages using qrexec.  
+This is a standard "using gpg behind firewall" problem, and the solution is to use that proxy.  
 
 Here's a script:  
 Save it as get_key  
@@ -19,7 +19,7 @@ wget "https://keyserver.ubuntu.com/pks/lookup?op=get&search=$1" -e use_proxy=on 
 ```
 An advantage of using a keyserver like keyserver.ubuntu.com is that you can use a search term and it will return *all* keys using that term.  
 
-So `get_key unman` will fetch keys and store them in `unman`.
+So `get_key unman` will fetch all keys and store them in `unman`.
 
 ```
 $ get_key unman
@@ -47,15 +47,12 @@ uid           unman (Qubes OS signing key) <unman@thirdeyesecurity.org>
 sub   rsa4096 2016-06-27 [S] [expires: 2020-06-30]
 sub   rsa4096 2016-06-25 [E]
 ```
-You can import them all, or:  
+You can import them all, and delete the keys you don't want, or:  
 `get-key 0x4B1F400DF25651B53C4141B38B3F30F9C8C0C2EF` will fetch the specific key.  
+This can the be imported:  
 `gpg --import 0x4B1F400DF25651B53C4141B38B3F30F9C8C0C2EF` 
 
 
-hkps.pool.sks-keyservers.net **doesnt** work like this.  
+hkps.pool.sks-keyservers.net **does not** work like this.  
 Using a search term returns the web page, which you have to parse to get the fingerprint you want.  
 Note that `hkps.pool.sks-keyservers.net` uses a certificate which you have to supply.
-
-
-
-
