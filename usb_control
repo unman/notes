@@ -1,0 +1,128 @@
+Sometimes may be worth taking control over what devices can be attached, either in dom0 or via usbVM.
+
+# SD Card reader:
+Attaches SD card directly to dom0 n x230
+
+`udevadm info --name=/dev/mmcXXXXX  --a `
+
+This will show full details of device and parents.
+
+Identify the relevant parameters, and create rule in /etc/udev/rules.d:
+To disable the Ricoh MMC reader on the x230:
+
+00-disable_mmc.rules:
+ACTION="add", KERNEL=="0000:02:00.0", SUBSYSTEM=="pci", RUN+="/bin/sh -c 'echo 1 > /sys/bus/pci/devices/0000\:02\:00.0/remove'
+
+Note that this leaves the option of *allowing* use of the reader by commenting that rule, or renaming it out of the way, because the rule is triggered on insertion of a device.
+A simple batch script would do.
+
+
+# USB Storage Devices
+Do not allow access to storage devices in a usbVM:
+
+The simplest route would be to block usb-storage.
+
+```
+rmmod usb-storage
+rmmod uas
+/cp /rw/config/no_uas.conf /etc/modprobe.d
+```
+
+Where that file contains:
+```
+install usb.strorage /bin/false
+install uas /bin/false
+```
+
+
+
+## An alternative approach uses udev:
+`udevadm info --name=/dev/sda  -a `
+
+```
+<snip>
+  looking at parent device '/devices/pci0000:00/0000:00:06.0/usb2/2-1/2-1.3/2-1.3.2/2-1.3.2:1.0':
+    KERNELS=="2-1.3.2:1.0"
+    SUBSYSTEMS=="usb"
+    DRIVERS=="usb-storage"
+    ATTRS{bInterfaceSubClass}=="06"
+    ATTRS{bInterfaceNumber}=="00"
+    ATTRS{supports_autosuspend}=="1"
+    ATTRS{bAlternateSetting}==" 0"
+    ATTRS{authorized}=="1"
+    ATTRS{bNumEndpoints}=="02"
+    ATTRS{bInterfaceProtocol}=="50"
+    ATTRS{bInterfaceClass}=="08"
+```
+
+The simplest route is to create a new udev.rules file in /etc/udev/rules.d to block all usb-storage devices.
+
+ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb-storage", RUN+="/bin/sh -c 'echo 0 > /sys$DEVPATH/authorized' "
+
+This means (from the left):  
+When a device is inserted, (regardless of KERNEL), that uses usb and usb-storage, mark that device as unauthorized.
+As a result the device will not be loaded as a block device, but other USB devices will work as normal.
+
+
+## Whitelisting a specific device.
+
+Use udevadm to get the device characteristics:
+
+```
+# udevadm info --name=/dev/sda:
+
+Udevadm info starts with the device specified by the devpath and then
+walks up the chain of parent devices. It prints for every device
+found, all possible attributes in the udev rules key format.
+A rule to match, can be composed by the attributes of the device
+and the attributes from one single parent device.
+<snip>
+  looking at parent device '/devices/pci0000:00/0000:00:06.0/usb2/2-1/2-1.2':
+    KERNELS=="2-1.2"
+    SUBSYSTEMS=="usb"
+    DRIVERS=="usb"
+    ATTRS{speed}=="480"
+    ATTRS{ltm_capable}=="no"
+    ATTRS{quirks}=="0x0"
+    ATTRS{devnum}=="8"
+    ATTRS{product}=="STORE N GO"
+    ATTRS{configuration}==""
+    ATTRS{version}==" 2.00"
+    ATTRS{devpath}=="1.2"
+    ATTRS{bNumInterfaces}==" 1"
+    ATTRS{maxchild}=="0"
+    ATTRS{bDeviceSubClass}=="00"
+    ATTRS{idVendor}=="18a5"
+    ATTRS{serial}=="1224000000120023"
+    ATTRS{removable}=="unknown"
+    ATTRS{avoid_reset_quirk}=="0"
+    ATTRS{idProduct}=="0302"
+    ATTRS{bMaxPacketSize0}=="64"
+    ATTRS{bConfigurationValue}=="1"
+    ATTRS{bcdDevice}=="1100"
+    ATTRS{busnum}=="2"
+    ATTRS{bDeviceProtocol}=="00"
+    ATTRS{authorized}=="1"
+    ATTRS{bmAttributes}=="80"
+    ATTRS{bNumConfigurations}=="1"
+    ATTRS{manufacturer}=="Verbatim"
+    ATTRS{bDeviceClass}=="00"
+    ATTRS{urbnum}=="531"
+    ATTRS{bMaxPower}=="500mA"
+```
+
+Now we can write the rules, identifying that type of device.
+
+
+```
+ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb-storage", ATTRS{idVendor}=="18a5", ATTRS{idProduct}=="0302", GOTO="end"
+ACTION=="add", SUBSYSTEM=="usb", DRIVER=="usb-storage", RUN+="/bin/sh -c 'echo 0 > /sys$DEVPATH/authorized' "
+
+LABEL="end"
+```
+
+We can also use {manufacturer} and {product} as user friendly characteristics to match.
+
+
+
+
