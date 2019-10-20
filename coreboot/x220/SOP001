@@ -1,0 +1,72 @@
+1.  Upgrade to the latest BIOS version using oem tool.
+2.  Remove Power Lead and Battery.
+3.  Attach earthing strap.
+4.  Remove 5 main screws holding keyboard.
+      Place screws in container A
+5.  Remove 2 small screws holding palm rest. .
+      Place screws in container B
+6.  Restore laptop.
+7.  Cover screen with protective cover.
+8.  Push keyboard toward screen using presser.
+00.  Lift rear of keyboard from palm rest using presser.
+10.  Move keyboard out of way against screen.
+11.  Remove palm rest. Fold it back against keyboard.
+12, Pull back protective film from front left corner to show chip.
+13. Tape film out of way.
+15. Identify chip. (Clean with alcohol if necessary.)
+16. Attach 5250 clip to chip - ensure RED cable is attached to pin 1.
+17. `mkdir ~/x220_XX` - allocate as required.
+18. Read chip - `flashrom -p ch341a_spi`
+     If no communication., reseat the clip until correct response is received.
+19. Read ROM - `flashrom -p ch341a_spi -c <definiition> -r flash_01.bin`
+20. Read ROM - `flashrom -p ch341a_spi -c <definiition> -r flash_02.bin`
+21. Confirm the reads are identical - `sha256sum flash*`
+      If the reads are not the same, delete the bin files, reseat the clip and repeat step 15-
+22. `idftool -x flash01.bin`
+23. Rename file segments:
+      cp ~/x220_XX/flashregion_0_flashdescriptor.bin descriptor.bin
+      cp ~/x220_XX/flashregion_2_intel_me.bin me.bin
+      cp ~/x220_XX/flashregion_3_gbe.bin gbe.bin
+
+IF VGABIOS required:
+24. Use uefuitool to extract VGABIOS:
+      ` uefitool flash_01.bin `
+25. Open Search, uncheck Unicode, search for "VGA Compatible BIOS"
+26. Double click on result to go to section.
+27. Right click on highlighted section, click "Extract Body"
+28. Save file as vbios.bin.
+29. Close uefitool.
+
+30. `mkdir -p ~/coreboot/3rdparty/blobs/mainboard/lenovo/x220`
+31. `cd ~/coreboot/3rdparty/blobs/mainboard/lenovo/x220`
+32. Move segments to directory:
+      mv ~/x220_XX/descriptor.bin .
+      mv ~/x220_XX/me.bin .
+      mv ~/x220_XX/gbe.bin .
+      mv ~/x220_XX/vbios.bin .
+
+COREBOOT
+34. `cd ~/coreboot/`
+35. Checkout the last good release of coreboot. 
+35. Copy 3isec coreboot configuration to .config
+36. `make`
+37. `cd ~/x220_XX` 
+37. Read chip - `flashrom -p ch341a_spi`
+     If no communication., reseat the clip until correct response is received.
+38. Read ROM - `flashrom -p ch341a_spi -c <definiition> -r flash_01.bin`
+39. Confirm the reads are identical - `sha256sum flash*`
+      If the reads are not the same, delete the bin files, reseat the clip and repeat step 33-
+40. `flashrom -p ch341a_spi -c <definiition> -w ~/coreboot/build/coreboot.rom`
+41. Remove 5250 clip from chip.
+42. Remove Tape from film.
+43. Restore protective film .
+44. Restore palm rest. 
+45. Replace keyboard, pushing toward screen.
+46. Pull keyboard back to lock in palm rest.
+46. Invert laptop.
+47. Replace 2 small screws holding palm rest.
+49. Replace 5 main screws holding keyboard.
+50. Replace Battery.
+51. Boot into coreboot.
+52. Test functionality.
+53. In case of error repeat process.  
