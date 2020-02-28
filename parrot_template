@@ -1,0 +1,90 @@
+The instructions at docs.parrotlinux.org/getting-started/install-qubes/
+for building a template are out of date, and will not build.
+
+1. Retrieve the official ParrotOS GPG key using a DispVM.
+
+  [user@xxxx-dvm ~]$ gpg --keyserver hkp://keys.gnupg.net --recv-key 3B3EAB807D70721BA9C03E55C7B39D0362972489  
+  [user@xxxx-dvm ~]$ gpg --list-keys --with-fingerprint 3B3EAB807D70721BA9C03E55C7B39D0362972489   
+  [user@xxxx-dvm ~]$ gpg --export --armor 3B3EAB807D70721BA9C03E55C7B39D0362972489 > parrot-key.asc  
+
+  Make sure the key is the authentic ParrotOS key.
+
+2. Create a ParrotOS TemplateVM.
+
+  qvm-clone buster-11 template-parrot
+
+3. Copy key from disposableVM
+
+  [user@xxxx-dvm ~]$ qvm-copy parrot-key.asc
+
+  Shut down the disposableVM
+
+4. Open terminal in template-parrot:
+
+[user@template-parrot]$ sudo apt update  
+[user@template-parrot]$ sudo apt full-upgrade  
+[user@template-parrot]$ sudo apt autoremove  
+[user@template-parrot]$ sudo apt clean  
+
+5. Protect Qubes packages
+
+[user@template-parrot ~]$ sudo apt-mark hold qubes-core-agent 
+[user@template-parrot ~]$ sudo apt-mark hold qubes-core-agent-networking
+[user@template-parrot ~]$ sudo apt-mark hold qubes-gui-agent 
+
+6. Set up Parrot archives.
+
+[user@template-parrot ~]$ sudo cat <<EOF > /etc/apt/sources.list.d/parrot.list  
+# ParrotOS repository  
+deb http://deb.parrotsec.org/parrot stable main contrib non-free  
+#deb-src http://deb.parrotsec.org/parrot stable main contrib non-free  
+EOF
+
+[user@template-parrot ~]$ sudo apt-key add ~/QubesIncoming/xxxx-dvm/parrot-key.asc
+[user@template-parrot ~]$ sudo apt update  
+IGNORE the warning message.  
+[user@template-parrot ~]$ sudo apt full-upgrade  
+[user@template-parrot ~]$ sudo apt autoremove  
+
+
+7. Shut down the new TemplateVM
+
+[user@template-parrot ~]$ sudo halt
+
+8. Increase the size of the root fs.
+
+In QubeManager, open the Settings for template-parrot.  
+Resize the template disk image if you plan on installing the full  
+ParrotOS distribution. For example to install parrot-tools-full you  
+must grow the size of the VM system from 10GB to at least 20GB.
+
+
+8. Ensure a terminal can be opened in the new TemplateVM
+
+[user@dom0 ~]$ qvm-run template-parrot gnome-terminal
+
+At this point you should have a working template and you can install the  
+tools you need.  
+You will need to mask some packages.
+
+[user@template-parrot ~]$ sudo apt update  
+[user@template-parrot ~]$ sudo apt upgrade  
+[user@template-parrot ~]$ sudo apt autoremove  
+user@template-parrot ~]$ sudo apt-mark hold wireguard
+[user@template-parrot ~]$ sudo su
+[root@template-parrot]# cat <<EOF >> /etc/apt/preferences.d/1hold  
+
+Package: wireguard
+Pin: release *
+Pin-Priority: -999
+EOF
+
+[user@template-parrot ~]$ sudo apt install parrot-tools-full
+
+9. Done.
+N.B. This is a *full* template, which could be used for general purposes,  
+in a Qubes installation.  
+It's also possible to start from a minimal template and instal only the  
+services that you want or need.
+Because parrot is based on Debian testing, it is **almost certain** that things
+will break.  Don't beef about this.
