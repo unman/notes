@@ -1,5 +1,5 @@
 It's possible to build arch templates using qubes builder. Simply select
-arch as a target in ./setup, run make install-deps, make qubes-vm and
+archlinux as a target in ./setup, run make get-sources, make qubes-vm, and
 make template.
 
 If you are not sure about building for yourself, or don't have time,
@@ -17,16 +17,17 @@ keyserver over Tor.
 You should do something like this, in a disposableVM:
 Download the arch template from https://qubes.3isec.org/Templates
 
-Once you have downloaded and confirmed my Qubes Signing Key, add it to
-your keyring:
-gpg -add <downloaded_key>
+Once you have downloaded and confirmed my "Qubes OS signing key", add it to
+your rpm keyring:
+`sudo rpm --import <downloaded_key>`
 
 Check the signature on the template:
-gpg <Template_file>
+`rpm -K <Template_file>`
+If all is well you will see "digests signatures OK"
 
 Once you are satisfied, install the Template.
-To do this you will need to copy it to dom0:
-qvm-run -p  <qube> 'cat <location of template>' > archtemplate
+To do this you will need to copy it to dom0. In dom0 run:
+`qvm-run -p  <qube> 'cat <location of template>' > archtemplate`
 
-Then install :
-sudo dnf install archtemplate
+Then install, in dom0 :
+`sudo dnf install archtemplate`
