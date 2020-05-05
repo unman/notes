@@ -1,0 +1,24 @@
+To use the repository you will need to get my Qubes OS signing key, validate it
+against sources in this mailing list, or at GitHub, or against different
+downloads via Tor.
+
+qvm-copy the key in to the arch template.
+Add the key:
+`sudo pacman-key --add <key>`
+`sudo pacman-key --lsign unman`
+
+`cd /etc/pacman.d`
+
+Then either create a new file, or rename the existing
+99-qubes-repository-4.0.conf.disabled to 99-qubes-repository-4.0.conf.
+Open the conf file for editing - the contents should be:
+[qubes-r4.0]
+Server = https://qubes.3isec.org/arch/4.0
+
+
+Then update:
+`sudo pacman -Syuu`
+
+
+
+
