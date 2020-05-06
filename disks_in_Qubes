@@ -1,0 +1,47 @@
+The standard presentation of disks in Qubes is for disks xvda,etc to be
+presented as SCSI disks.
+In 2017, the default controller was changed to use the qemu mptsas1068
+controller because the standard controller was not recognised by Windows
+7 and Windows 10 installers.
+An unintended side effect of this was that some *other* installers now failed to
+work - e.g ReactOS and Android. These installers no longer see disks on
+which they can install.
+
+The relevant patch is in vmm-xen/patch-stubdom-linux-0005.patch, which patches
+tools/libxl/libxl_dm.c - this sets the device parameter in the qemu boot.
++        if (b_info->stubdomain_version == LIBXL_STUBDOMAIN_VERSION_LINUX)
++            flexarray_append_pair(dm_args, "-device", "mptsas1068,id=scsi0");
+
+It may be worth testing other qemu SCSI controllers to see if any are compatible both
+with Windows and ReactOS.
+
+In the meantime, it's possible to work around the problem, by redefining the
+device on the fly when the relevant qube is started.
+Let's look at the process - create a new HVM, and start it - no need to attach a
+boot device at this stage.
+`qvm-ls --format full new_HVM` will give the UUID for the qube.
+The UUID canbe used to access the relevant entries in xenstore, like this:
+`xenstore-list /vm/c4f3fb4f-e6ec-427d-81d4-9b5e35657099 `. Digging a
+little further, there is an an entry for dmargs -
+
+`xenstore-read  /vm/c4f3fb4f-e6ec-427d-81d4-9b5e35657099/image/dmargs` produces
+this output:
+-xen-domid\x1b446\x1b-nodefaults\x1b-no-user-config\x1b-name\x1breactor\x1b-display\x1bnone\x1b-device\x1bcirrus-vga,vgamem_mb=8\x1b-boot\x1border=dc\x1b-device\x1busb-ehci,id=ehci\x1b-device\x1busb-tablet,bus=ehci.0\x1b-net\x1bnone\x1b-display\x1bqubes-gui\x1b-machine\x1bxenfv\x1b-m\x1b2040\x1b-device\x1bmptsas1068,id=scsi0\x1b-drive\x1bfile=/dev/xvda,if=none,id=disk0,format=host_device,cache=writeback,readonly=off\x1b-device\x1bscsi-hd,bus=scsi0.0,drive=disk0,wwn=0x3525400051756265\x1b-drive\x1bfile=/dev/xvdb,if=none,id=disk1,format=host_device,cache=writeback,readonly=off\x1b-device\x1bscsi-hd,bus=scsi0.0,drive=disk1,wwn=0x3525400051756266\x1b-drive\x1bfile=/dev/xvdc,if=none,id=disk2,format=host_device,cache=writeback,readonly=off\x1b-device\x1bscsi-hd,bus=scsi0.0,drive=disk2,wwn=0x3525400051756267\x1b-drive\x1bif=ide,readonly=on,media=cdrom,id=ide-51840,file=/dev/xvdi,format=host_device
+
+It's clear that \x1b is used as the delimiter here: replacing it with a space,and breaking
+down what's there produces this clearer output:
+-device mptsas1068,id=scsi0  
+-drive  file=/dev/xvda,if=none,id=disk0,format=host_device,cache=writeback,readonly=off   -device   scsi-hd,bus=scsi0.0,drive=disk0,wwn=0x3525400051756265   
+-drive  file=/dev/xvdb,if=none,id=disk1,format=host_device,cache=writeback,readonly=off   -device   scsi-hd,bus=scsi0.0,drive=disk1,wwn=0x3525400051756266   
+-drive  file=/dev/xvdc,if=none,id=disk2,format=host_device,cache=writeback,readonly=off   -device   scsi-hd,bus=scsi0.0,drive=disk2,wwn=0x3525400051756267   
+-drive  if=ide,readonly=on,media=cdrom,id=ide-51840,file=/dev/xvdi,format=host_device
+
+This shows where the device driver is set, and also the handling of the disks, as well as
+the cdrom device.
+
+
+
+
+
+
+
