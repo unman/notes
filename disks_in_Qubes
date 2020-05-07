@@ -91,7 +91,35 @@ qemu -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol
 set +f
 unset IFS
 ```
+
+
+Once the file has been changed, rebuild the archive:
+`find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../stubdom-linux-rootfs-new`
+`cp ../stubdom-linux-rootfs-new /usr/lib/xen/boot/stubdom-linux-rootfs `
+
+
 Now when the HVM is booted with a ReactOS CD attached, the installer identifies
 a target for installation, and the install proceeds.
 
 As it stands, this change applies to **all** HVMs.
+
+It is possible to target the change using the name of the HVM - this
+imposes on the user some degree of consistency in the naming of qubes.
+For example, it is possible to get the name of a qube using xenstore-read,
+and to use that as a condition in applying the `sed` command.
+So the above sed line could be wrapped in a conditional:
+
+```
+IFS=$'\x1b'
+qube_name=$(xenstore-read "/local/domain/$domid/name")
+case "$qube_name" in 
+	react*)
+	dm_args=$(echo "$dm_args" | sed "s%-drive\\${IFS}file=/dev/xvda.*wwn=0x352540005175626.%-drive\\${IFS}if=ide,media=disk,file=/dev/xvda,id=disk0,format=host_device,cache=writeback,readonly=off%g") ;;
+esac
+set -f
+qemu -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny \
+-chardev pipe,path=/tmp/qmp/qemu,id=m -mon chardev=m,mode=control \
+    $dm_args $kernel &
+set +f
+unset IFS
+```
