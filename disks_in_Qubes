@@ -36,12 +36,62 @@ down what's there produces this clearer output:
 -drive  file=/dev/xvdc,if=none,id=disk2,format=host_device,cache=writeback,readonly=off   -device   scsi-hd,bus=scsi0.0,drive=disk2,wwn=0x3525400051756267   
 -drive  if=ide,readonly=on,media=cdrom,id=ide-51840,file=/dev/xvdi,format=host_device
 
-This shows where the device driver is set, and also the handling of the disks, as well as
-the cdrom device.
+This shows where the device driver is set, and also the handling of the
+disks, as well as the cdrom device.
 
+In a Qubes system, the HVM boot process runs from /usr/lib/xen/boot,
+and the root files can be found at /usr/lib/xen/boot/stubdom-linux-rootfs.
+This is a gzipped archive, as `file` will show.
+`cp /usr/lib/xen/boot/stubdom-linux-rootfs stubdom-linux-rootfs `
+`mv stubdom-linux-rootfs stubdom-linux-rootfs.gz`
+`gunzip stubdom-linux-rootfs `
 
+`file` shows that the resulting file is an ASCII cpio archive, and the
+relevant structure can be extracted as follows:
+`cpio -i -d -H newc --no-absolute-filenames < stubdom-linux-rootfs`
+Remove the archive file - `rm stubdom-linux-rootfs`
 
+In the init file, the qemu call is clear:
+```
+# $dm_args and $kernel are separated with \x1b to allow for spaces in arguments.
+IFS=$'\x1b'
+set -f
+qemu -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny \
+-chardev pipe,path=/tmp/qmp/qemu,id=m -mon chardev=m,mode=control \
+    $dm_args $kernel &
+set +f
+unset IFS
+```
+where dm_args=$(xenstore-read -R "$vm_path/image/dmargs") .
 
+The init file is a shell script, and if the arguments are manipulated
+here, then the HVM will boot with a different configuration. It is simple
+to add *more* arguments to the boot parameters, or to change existing
+arguments.
 
+In this case, change the parameters in dm_args for the xvda device using sed,
+referring back to the earlier argument list.
+`sed "s%-drive\\${IFS}file=/dev/xvda,if=none,id=disk0,format=host_device,cache=writeback,readonly=off\\${IFS}-device\\${IFS}scsi-hd,bus=scsi0.0,drive=disk.,wwn=0x352540005175626.%-drive\\${IFS}if=ide,media=disk,file=/dev/xvda,id=disk0,format=host_device,cache=writeback,readonly=off%g"
 
+It would be simple to reduce this somewhat using a regexp.
+`sed "s%-drive\\${IFS}file=/dev/xvda.*wwn=0x352540005175626.%-drive\\${IFS}if=ide,media=disk,file=/dev/xvda,id=disk0,format=host_device,cache=writeback,readonly=off%g"
 
+Now, the HVM will boot, and the xvda device will be presented as a standard
+disk on the IDE bus.
+
+The changed file looks like this:
+```
+# $dm_args and $kernel are separated with \x1b to allow for spaces in arguments.
+IFS=$'\x1b'
+dm_args=$(echo "$dm_args" | sed "s%-drive\\${IFS}file=/dev/xvda.*wwn=0x352540005175626.%-drive\\${IFS}if=ide,media=disk,file=/dev/xvda,id=disk0,format=host_device,cache=writeback,readonly=off%g")
+set -f
+qemu -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny \
+-chardev pipe,path=/tmp/qmp/qemu,id=m -mon chardev=m,mode=control \
+    $dm_args $kernel &
+set +f
+unset IFS
+```
+Now when the HVM is booted with a ReactOS CD attached, the installer identifies
+a target for installation, and the install proceeds.
+
+As it stands, this change applies to **all** HVMs.
