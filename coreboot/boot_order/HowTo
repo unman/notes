@@ -1,0 +1,35 @@
+When using SeaBios as payload, you can change the boot order with a
+simple text file.
+The file should show the boot order in OpenFirmware Format.
+
+1. Boot the system.
+2.  Build cbmem
+```
+  sudo apt install git make build-essential
+  git clone https://review.coreboot.org/coreboot
+  cd coreboot/util/cbmem
+  make
+```
+3. use cbmem to find the devices:
+  `cbmem 1 ` will show the boot log.
+  Look for entries that say "Searching bootorder.." - these show the relevant
+devices.
+4. Create the bootorder file using those descriptors, one per line in the order
+you want.
+5. Insert the bootorder in to coreboot.rom:
+```
+  cbfstool coreboot.rom add -f bootorder -n bootorder -t raw
+  cbfstool coreboot.rom print
+```
+6. Flash the new coreboot image.
+
+If you want to *change* the bootorder, you need to first remove the bootorder
+segment , and then write it anew:
+```
+  cbfstool coreboot.rom remove -n bootorder
+  cbfstool coreboot.rom add -f bootorder -n bootorder -t raw
+  cbfstool coreboot.rom print
+```
+
+Attached is a file for x220 showing USB taking precedence of internal disk.
+You can see the relation between the OF descriptors and standard PCI references.
