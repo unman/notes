@@ -1,0 +1,30 @@
+Create HVM qube.
+Increase system disk size to 20G
+Start qube with openBSD installer iso attached
+Default install openBSD
+
+Install gnome:
+`pkg_add -i gnome`
+
+edit /etc/rc.conf.local:
+```
+multicast=YES
+pkg_scripts="messagebus avahi_daemon gdm"
+```
+
+Increase size of "datasize" in login.conf:
+edit /etc/login.conf
+```
+gnome:\
+	:datasize-cur=1024M:\
+	tc=default:
+```
+
+`usermod -L gnome ${username}`
+`rcctl disable xenodm`
+`rcctl enable multicast messagebus avahi_daemon gdm`
+
+
+reboot
+
+
