@@ -36,6 +36,18 @@ Primary partition. Accept the default size; make it Bootable;Write:Quit.
 9.  Make sure that the new qube is connected to a netvm
 10.  `qvm-start reaction `
 
+## Configure the system
+11. Configure Android as usual. At the "Connect to Wi-Fi" stage, select "See all available networks", and at the next window, select VirtWifi.
+		This will enable the qube to use the netvm. Network configuration is automatic, and "tablet" will be online.
+12.	Complete configuration.
+
+To shutdown the qube, use `qvm-shutdown`
+
+Note that it is also possible to create the qube at stage 7 as a StandAlone Template.
+You can then use this as a template for other qubes, which will effectoivelly act as DisposableVMs.
+
+N.B The Android qube is heavy on memory and CPU resources.
+
  
   
 
