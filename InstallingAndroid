@@ -22,10 +22,9 @@ use android-x86_64-9.0-r2.iso.
 
 # Create the Android qube
 7.  `qvm-create --standalone -l red --property kernel='' --property virt_mode=HVM --property memory=4000 reaction`
-8.  `qvm-start reaction --cdrom-qube1:/home/user/Downloads/android-x86_64-9.0-r2.iso`.
+8.  `qvm-start reaction --cdrom=qube1:/home/user/Downloads/android-x86_64-9.0-r2.iso`.
     Choose the option to Install to harddisk
-    Create/Modify partitions - say "No" to GPT, and create a New
-Primary partition. Accept the default size; make it Bootable;Write:Quit.
+    Create/Modify partitions - say "No" to GPT, and create a New Primary partition. Accept the default size; make it Bootable;Write:Quit.
     In the Installer, the partition you created will be highlighted.  Click OK
     Format as ext4. Select "Yes" to Confirm.
     Say "Yes" to Install GRUB boot loader.
@@ -38,7 +37,7 @@ Primary partition. Accept the default size; make it Bootable;Write:Quit.
 
 ## Configure the system
 11. Configure Android as usual. At the "Connect to Wi-Fi" stage, select "See all available networks", and at the next window, select VirtWifi.
-		This will enable the qube to use the netvm. Network configuration is automatic, and "tablet" will be online.
+    This will enable the qube to use the netvm. Network configuration is automatic, and "tablet" will be online.
 12.	Complete configuration.
 
 To shutdown the qube, use `qvm-shutdown`
