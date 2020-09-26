@@ -13,7 +13,7 @@ https://github.com/unman/change_disk
     If the files were downloaded in qube1, then in dom0:
     `qvm-run -p qube1 'cat /home/user/Downloads/init_patch' > qemu_dmargs/init_patch`
     `qvm-run -p qube1 'cat /home/user/Downloads/patch_init' > qemu_dmargs/patch_init`
-4.  `cp /usr/lib/xen/boot/stubdom-linux-rootfs > stubdom-linux-rootfs.orig`
+4.  `cp /usr/lib/xen/boot/stubdom-linux-rootfs stubdom-linux-rootfs.orig`
 5.  `cd  qemu_dmargs`
 6.  `chmod +x patch_init`
 7.  `sudo ./patch_init`
