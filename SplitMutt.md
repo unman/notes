@@ -61,7 +61,7 @@ Once you have the mail, you can transfer it to the mail qube, which is offline.
 You could do this with a simple `qvm-move` operation.  
 This will work reasonably well - you will need a global rule in the `/etc/qubes-rpc/policy/qubes.FileCopy` policy file.
 
-An alternative would be to use qubes-Rsync to move the files between the receiver and the mail qube. This is a neat solution, because it allows us to place the files exactly where we want them - in the mail reader's inbox - *and* delete them from the receiver.
+An alternative would be to use qubes-sync to move the files between the receiver and the mail qube. This is a neat solution, because it allows us to place the files exactly where we want them - in the mail reader's inbox - *and* delete them from the receiver.
 
 # Reading mail
 
@@ -71,3 +71,18 @@ You can set up multiple folders and move/copy files to them as you choose.
 Use `notmuch` to index and search your mail files.
 
 # Sending mail
+
+Because you are using mutt in an offline qube, when you want to send mail, you need some way of storing the messages, and then transferring them to an online qube to send them.
+This is just the same as using mutt on a computer that may be offline at times, and the problem has already been solved.
+
+You can use `msmtpqueue` to queue messages until you are ready to send them. There's a script included called msmtp-enqueue.sh which will place messages to send in a directory, (`~/.msmtpqueue`), and you need to set this as the smtp agent in the mutt configuration file.
+
+You can look at the queued messages using `msmtp-listqueue.sh`.
+Then all you need to do is copy those messages to the sending qube - you can do this using qvm-copy or (better) qubes-sync. It's good practice to examine the queue before doing this, and to retain a prompt for the mutt-sender copy action.
+
+In the receiver qube, you configure the smtp program of your choice to send mail to your SMTP server, as usual.
+The only difference is that you have configured it to pick up messages from the directory where the mails are copied.  
+You can use `msmtpqueue` again for this.  
+Check the files again with `msmtp-listqueue.sh`, and use the `msmtp-runqueue.sh` script to actually send them.
+
+
