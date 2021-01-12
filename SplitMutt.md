@@ -31,6 +31,8 @@ pop3 - mail.domain.com:995
 imap - mail.domain.com:993
 smtp - smtp.domain.com:465
 
+# Getting the mail
+
 You might think of using `offlineimap` to grab the messages from the server.
 There's one *huge* downside to that - it isn't possible to use offlineimap to get a subset of messages.
 Although offlineimap does have `maxage`, this doesn't work with an empty Maildir.
@@ -49,7 +51,18 @@ This is somewhat difficult, in that *all* the headers will need to be downloaded
 Still another possibility, if one has ssh access to the server would be to use rsync on the incoming mailfile in /var/spool/mail.
 This has the advantage of being absolutely straightforward, except that one cant delete the file after fetching it since there needs to be some file there for delivery to work, on the server.
 It would be possible to recreate the mailfile after the rsync operation has completed.  
-Of course, if the server is using maildirs, then it's simple to rsync using the `mtiime` parameter, to get most recent mails.
+Of course, if the server is using maildirs, then it's simple to rsync using the `mtime` parameter, to get most recent mails.
 
 So there are 3 different approaches: each one has its merits, and each its difficulties.
 Choose the one that works best with your server, and the way you want to use/keep your mail.
+
+
+Once you have the mail, you can transfer it to the mail qube, which is offline.
+You could do this with a simple `qvm-move` operation.  
+This will work reasonably well - you will need a global rule in the `/etc/qubes-rpc/policy/qubes.FileCopy` policy file.
+
+An alternative would be to use qubes-Rsync to move the files between the receiver and the mail qube. This is a neat solution, because it allows us to place the files exactly where we want them - in the mail reader's inbox - *and* delete them from the receiver.
+
+# Reading mail
+
+
