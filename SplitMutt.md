@@ -65,4 +65,9 @@ An alternative would be to use qubes-Rsync to move the files between the receive
 
 # Reading mail
 
+This is easy - have mutt configured as normal, to read mail in the Maildir format (one message per file, instead of 1 mbox with all files.)  
+Read the files in the "inbox" - where you have placed them after transfer from the receiver.  
+You can set up multiple folders and move/copy files to them as you choose.  
+Use `notmuch` to index and search your mail files.
 
+# Sending mail
