@@ -2,7 +2,7 @@ Grains are bits of information about the underlying system, which can be
 used in salt.
 
 Here's a simple example.
-Let's say we wanted to copy a file to a qubes, but only if the qube was based on
+Let's say we wanted to copy a file to a qube, but only if the qube was based on
 Debian.
 
 Let's create two test qubes, based on different templates, using salt.
