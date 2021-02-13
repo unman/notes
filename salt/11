@@ -19,7 +19,7 @@ base:
   - filecopy
 
 Remember how we can target qubesctl?
-When updating templates, we used '--templates' - we can also use '-- apps'.
+When updating templates, we used '--templates' - we can also use '--app'.
 
 See what happened? We iterated over every appVM, and skipped those that
 didn't match browse*
