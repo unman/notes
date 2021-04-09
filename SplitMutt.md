@@ -85,4 +85,38 @@ The only difference is that you have configured it to pick up messages from the 
 You can use `msmtpqueue` again for this.  
 Check the files again with `msmtp-listqueue.sh`, and use the `msmtp-runqueue.sh` script to actually send them.
 
+## Putting it all together
+You are going to use these programs:
+getmail - to fetch the mail
+mutt    - to read it
+msmtp   - to queue the files on the mutt qube, and to send them on the sender.
+
+I prefer to use different templates for each machine, all based on a minimal template.
+You can do this too, or use a single template with all the programs installed.  
+For this example, I'll show the set up with different templates.
+
+1. Clone the debian-10 minimal template to template-receiver.
+2. Install network support, getmail, and qubes-sync in template-receiver.
+3. Create a new `receiver` qube, and make it a template_for_dispvms
+4. Configure getmail in the `receiver` qube
+5. Configure qubes-sync in the `receiver` qube
+6. Create a named disposableVM called `fetcher`, based on the `receiver` qube.
+
+1. Clone the debian-10 minimal template to template-mutt.
+2. Install mutt, msmtp, and qubes-sync in the new template.
+3. Create a new `mutt` qube using the template.
+4. Configure mutt.
+5. Configure qubes-sync
+
+1. Clone the debian-10 minimal template to template-sender.
+2. Install network support,msmtp, and qubes-sync in template-sender.
+3. Create a new `sender` qube, and make it a template_for_dispvms
+4. Configure msmtp in the `sender` qube
+5. Configure qubes-sync
+6. Create a named disposableVM called `poster`, based on the `sender` qube.
+
+1. Create the policies to allow sync between `fetcher` and `mutt`, and `mutt` and `poster`.  
+Make sure that you keep the prompt for traffic between `mutt` and `poster`.
+Optionally keep a prompt between `fetcher` and `mutt`.
+
 
