@@ -12,7 +12,7 @@ The general process is:
 2. Validate the key
 3. Copy the key to a template
 4. Import the key to the package manager
-5. Add repostory definitions
+5. Add reposiitory definitions
 6. Update the package lists
 7. Start using the repository
 
@@ -23,11 +23,45 @@ If you download from a web page remember that you need a text version (not HTML)
 
 2. Validate the key:  
 `gpg --with-fingerprint unman.asc` , or  
-`gpg2 -n -q --import --import-options import-show unman.asc`
-
+`gpg2 -n -q --import --import-options import-show unman.asc`  
 This will show the fingerprint which you can check against the fingerprint from a few places.
 
 3. Copy to a template  
 `qvm-copy unman.asc` and select the template you want to use.
 
-qvm-copy the key in to the Fedora template.
+## Debian
+Working in the template:
+4. Import the key:  
+`sudo apt-key add /home/user/QubesIncoming/<source>/unman.asc`
+
+5. Add repository definitions
+Create a file as root `/etc/apt.sources.list.d/unman-r4.0.list` :
+```
+# Unman qubes repository
+deb [arch=amd64] https://qubes.3isec.org/4.0/ buster main
+```
+6. Update the package lists
+`sudo apt update`
+
+7. Start using the repository
+
+## Fedora
+Working in the template:
+4. Import the key:  
+`sudo rpmkeys --import /home/user/QubesIncoming/<source>/unman.asc`
+
+5. Add repository definitions
+Create a file as root `/etc/yum.repos.d/unman-r4.0.repo` :
+```
+[unman-vm-r4.0-current]
+name= Unman qubes repository
+baseurl = https://qubes.3isec.org/fedora/r4.0/$releasever/$basearch/base
+skip_if_unavailable=False
+gpgcheck=1
+enabled=1
+```
+
+6. Update the package lists
+`sudo dnf update`
+
+7. Start using the repository
