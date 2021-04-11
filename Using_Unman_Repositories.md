@@ -61,6 +61,17 @@ gpgcheck=1
 enabled=1
 ```
 
+*For dom0 packages:*
+Create a file as root `/etc/yum.repos.d/unman-dom0-r4.0.repo` :
+```
+[unman-dom0-r4.0-current]
+name= Unman dom0 qubes repository
+baseurl = https://qubes.3isec.org/fedora/dom0/r4.0/$releasever/$basearch/base
+skip_if_unavailable=False
+gpgcheck=1
+enabled=1
+```
+
 6. Update the package lists
 `sudo dnf update`
 
