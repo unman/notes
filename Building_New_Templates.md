@@ -91,7 +91,7 @@ git checkout -b parrot unman/parrot
 ```
 
 Although this is long, it takes far longer to read than to do, and the process is simple.
-You can adapt this processs to build almost any flavour of template you want: any template based on an existing template.
+You can adapt this process to build almost any flavor of template you want: any template based on an existing template.
 Parrot, Kali, Mint, BlackArch.
 
 Building a **new** template takes a little more work.
