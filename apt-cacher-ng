@@ -37,6 +37,8 @@ If requests fail because the file type is not allowed, create a pattern for
 volatile data:
 VfilePatternEx: .*metalink?repo=fedora*
 
+To allow for the initial download of the mirror sites in a fresh fedora template add:
+PassThroughPattern: ^(.*\.fedoraproject\.org):443$
 
 3.  TLS SUPPORT:
 Two methods:
