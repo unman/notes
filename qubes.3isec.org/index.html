@@ -1,0 +1,48 @@
+<html><body>
+<h1>Qubes stuff</h1>
+
+<ul>
+	<li><a href="Live/">Live Images</a></li>
+	<li><a href="Templates_3.2/">Templates for 3.2</a></li>
+	<li><a href="Templates_4.0/">Templates for 4.0</a></li>
+	<li><a href="3.2/">Ubuntu packages for 3.2</a></li>
+	<li><a href="4.0/">Ubuntu packages for 4.0</a></li>
+
+</ul>
+
+All files are signed with my Qubes OS Signing key:
+<br>
+<a href="http://pgp.mit.edu/pks/lookup?search=0x8B3F30F9C8C0C2EF">0x8B3F30F9C8C0C2EF</a>
+<br>
+<br>
+<pre>
+pub   4096R/C8C0C2EF 2016-06-25
+      Key fingerprint = 4B1F 400D F256 51B5 3C41  41B3 8B3F 30F9 C8C0 C2EF
+uid                  unman (Qubes OS signing key) <unman@thirdeyesecurity.org>
+sub   4096R/4731B36C 2016-06-27 [expires: 2022-06-30]
+</pre>
+
+<br>
+You'll need to get this from a keyserver, or two, to make sure all is fine.
+<br>
+You can also check the Qubes users mailing list or <a href="https://github.com/unman/unman">github</a>.
+<br>
+<br>
+To use a Ubuntu repository, download the key, copy it to a Ubuntu Template, and install it using apt-key.
+<br>
+Then add a line like this to /etc/apt/sources.list:
+<br>
+<br>
+deb https://qubes.3isec.org/3.2 xenial main
+<br>
+or:
+<br>
+deb https://qubes.3isec.org/4.0 bionic main
+<br>
+<br>
+Replace 'bionic' with the code name of your version.
+<br>
+<br>
+unman
+	
+</body></html>
