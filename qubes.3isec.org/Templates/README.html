@@ -2,36 +2,52 @@
 <h1>Qubes templates</h1>
 
 All templates are signed with my Qubes OS Signing key:
-<br>
-<a href="http://pgp.mit.edu/pks/lookup?search=0x8B3F30F9C8C0C2EF">0x8B3F30F9C8C0C2EF</a>
-<br>
-<br>
-<pre>
+<code>
 pub   4096R/C8C0C2EF 2016-06-25
       Key fingerprint = 4B1F 400D F256 51B5 3C41  41B3 8B3F 30F9 C8C0 C2EF
 uid                  unman (Qubes OS signing key) <unman@thirdeyesecurity.org>
 sub   4096R/4731B36C 2016-06-27 [expires: 2022-06-30]
-</pre>
+</code>
 
 <br>
-You'll need to get this from a keyserver, or two, to make sure all is fine.
+You can read about how to get a copy of the key, and how to validate it <a href="./index.html">here</a>.
 <br>
-You can also check the Qubes users mailing list or <a href="https://github.com/unman/unman">github</a>.
+You will need to copy the key in to dom0:
 <br>
+<code>
+qvm-run -p  <qube> 'cat <path to key> ' > unman.pub
+</code>
 <br>
-You can check the signature, after importing my public key, by, (e.g):
+and then import it:
+<code>
+sudo rpm --import unman.pub
+</code>
+<p>
+Download the template you want to use, and copy it into dom0:
 <br>
-'rpm -K template_package_name'
+<code>
+qvm-run -p  <qube> 'cat <path to downloaded template> ' > <template_package_name>
+</code>
 <br>
+replacing <pre><template_package_name></pre> with a name of your choice.
 <br>
+Then check the signature by (e.g):
+<br>
+<code>
+rpm -K template_package_name
+</code>
+<br>
+<p>
+
 Templates like Parrot or Kali are based on Debian testing.
 <br>
-To avoid breakage when updating the core Qubes packages are on hold. 
-This means that they will not be updated.
-You can check this by 'apt-mark showhold'.
+To avoid breakage when updating, the core Qubes packages are on hold. 
+<b>This means that they will not be updated.</b>
+You can confirm this by running <code>apt-mark showhold</code>
 <br>
-'apt-mark unhold' will remove the hold and allow you to update the Qubes packages.
-I suggest you restore the hold (apt-mark hold) to make sure that the Qubes p0ackages are not removed when updating other packages.
+<code>apt-mark unhold </code> will remove the hold, and allow you to update the Qubes packages.
+<br>
+I suggest you restore the hold <code>apt-mark hold </code> to make sure that the Qubes packages are not removed when updating other packages.
 <br>
 <br>
 unman
