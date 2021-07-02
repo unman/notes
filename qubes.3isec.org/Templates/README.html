@@ -43,13 +43,25 @@ Templates like Parrot or Kali are based on Debian testing.
 <br>
 To avoid breakage when updating, the core Qubes packages are on hold. 
 <b>This means that they will not be updated.</b>
-You can confirm this by running <code>apt-mark showhold</code>
+You can confirm this by running <code>apt-mark showhold</code> in the template.
 <br>
 <code>apt-mark unhold </code> will remove the hold, and allow you to update the Qubes packages.
 <br>
 I suggest you restore the hold <code>apt-mark hold </code> to make sure that the Qubes packages are not removed when updating other packages.
 <br>
 <br>
+So, while updating a template you will see that some packages cannot be upgraded because they will conflict with the Qubes packages.
+<br>
+Periodically, in the template, remove the hold on the Qubes packages. Update the package list with <code>apt update</code>  and then update the Qubes packages - either manually with <code>apt install... </code>, or using a manager like aptitude, and selecting Qubes packages for upgrade.
+<br>
+Once the upgrade has been completed, put the Qubes packages back on hold, and upgrade again.
+<p>
+Undoubtedly a pain, but less than the pain of breaking your qubes, and having to crawl backwards to get them working again.
+<br>
+Then again, if you use aptitude you would be able to see what changes would be made, opt to retain the Qubes packages - <b> always keep the Qubes packages</b>, and avoid breakage that way.
+This depends on you looking to see what changes will be made and acting accordingly.
+Using  <code>apt-mark hold </code> will take some pressure off.
+<p>
 unman
 	
 </body></html>
