@@ -1,0 +1,58 @@
+Using Jinja for templating
+
+It's possible to use jinja within your salt states.
+Jinja allows you to build templates, and apply them in your states.
+We've already seen an example in the use of grains:
+
+/home/user/test:
+  file.managed:
+    {% if grains['os_family']|lower == 'debian' %}
+    - source:
+      - salt://testfile
+    {% elif grains['os_family']|lower == 'redhat' %}
+    - source:
+      - salt://testfile2
+    {% else %}
+    - source:
+      - salt://testfile3
+    {% endif %}
+    - user: user
+    - group: user
+    - mode: 640
+
+
+The jinja statements are contained within {% ..%} delimiters.
+
+The Jinja documentation is good and can be found at https://jinja.palletsprojects.com/en/3.0.x/templates/
+You can use variables, tests,  and flow control from jinja to extend your states.
+You refer to jinja variables like this: {{ name }}
+
+In the simple example above the source file changes depending on the distribution.
+You can also run other salt modules *within* jinja, and use the results to control the state.
+An example should make things clear:
+
+{% for file in salt['file.find']('/home/user/dir', name='*txt' ) %}
+{{ file }}:
+  file.replace:
+    - name: {{ file }}
+    - pattern: 'one'
+    - repl: 'two'
+{% endfor %}
+
+The first line calls file.find from the file module - we specify the target directory, and a name using a wild card, and the iterate over the results.
+Then we build the state - we have to make the identifier unique,as usual, and the simplest way to do this is to reuse the variable.
+If we had /home/user/dir/qube.txt and /home/user/dir/salt.txt, then the states would be:
+
+/home/user/dir/qube.txt:
+  file.replace:
+    - name: /home/user/dir/qube.txt
+    - pattern: 'one'
+    - repl: 'two'
+
+/home/user/dir/salt.txt:
+  file.replace:
+    - name: /home/user/dir/salt.txt
+    - pattern: 'one'
+    - repl: 'two'
+
+An alternative approach you can use would be to *define* a variable using jinja's "set" statement, and then iterate over the elements.
