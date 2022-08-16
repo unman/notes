@@ -8,7 +8,7 @@ Using a caching proxy saves on both.
 apt-cacher-ng is a caching proxy with support for Debian based distros out of the box, as well as Arch.
 It can be configured to support Fedora, Suse, Gentoo, and \*BSD
 
-#  INSTALL 
+###  INSTALL 
 Create a new Debian based template -  
 `qvm-clone debian-11-minimal template-cacher`
 
@@ -19,7 +19,7 @@ systemctl mask apt-cacher-ng
 ```
 Shut down template-cacher.
 
-# Create and configure the proxy
+### Create and configure the proxy
 
 Create a qube and give it plenty of space on the private volume:
 ```
@@ -52,7 +52,7 @@ Restart service:
 `systemctl restart apt-cacher-ng`
 
 
-# Using the proxy
+### Using the proxy
 You can use the proxy simply be editing the qrexec policy.
 Create a new policy in dom0 /etc/qubes/policy/30-user.policy:
 `qubes.UpdatesProxy * @type:TemplateVM  @default  allow target=cacher`
@@ -60,10 +60,10 @@ Create a new policy in dom0 /etc/qubes/policy/30-user.policy:
 Now all templates will attempt to use the caching proxy instead of the default proxy running on sys-net.
 
 
-# Configuring templates.
+### Configuring templates.
 Some templates use HTTPS links to repositories. These need special treatment.
 
-There are two methods:
+There are two methods:  
 1. 
 Create new file in /etc/apt-cacher-ng/backends_qubes:
 https://yum.qubes-os.org/
@@ -100,14 +100,14 @@ Invalid response from proxy: HTTP/1.0 403 CONNECT denied (ask the admin to allow
 
 ## Other configuration.
 
-# Grouping repositories
+### Grouping repositories
 apt-cacher-ng has a mechanism for mapping calls to different repositories on to the same cache.
 This is called `mapping` and is described in the excellent [manual](https://www.unix-ag.uni-kl.de/~block/acng/html/index.html).
 There are some predefined mapping lists that you can use.  
 If you check the caches at `/var/cache/apt-cacher-ng` you may see that there are entries for individual repositories. You can edit the mapping files to include them.
 Ideally you want **all** the packages downloaded from **any** Debian repository to be served from the same cache.
 
-# Fedora
+### Fedora
 Fedora templates need some special treatment, because the default repository definitions use metalinks.
 You can either change this to use a BASEURL definition, or to make the metalinks return HTTP repos instead of HTTPS links.
 
@@ -126,7 +126,7 @@ volatile data:
 All this is covered in the manual.
 
 
-# Troubleshooting
+### Troubleshooting
 
 You can exclude templates from using the proxy by setting a policy line *before* the one that points to cacher in /etc/qubes/policy/30-user.policy.
 The new line should point named templates to the default system proxy, like this:
@@ -144,12 +144,12 @@ There is also a dashboard available on the caching proxy at http://localhost:808
 Read the [manual](https://www.unix-ag.uni-kl.de/~block/acng/html/index.html).
 
 
-# Updates over Tor or VPN
+### Updates over Tor or VPN
 Set the netvm for the cacher qube to a Tor or VPN proxy.
 
 
-## The simple way:
-Follow the instructions ate https://qubes.3isec.org/tasks.html to install qubes-task.
-Select the cacher package and install it.
+# The simple way:
+Follow the instructions at https://qubes.3isec.org/tasks.html to install qubes-task.  
+Select the cacher package and install it.  
 The caching proxy will be created, and configured.
 All existing templates will be configured to use the proxy.
