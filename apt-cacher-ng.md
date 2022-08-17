@@ -110,7 +110,7 @@ Ideally you want **all** the packages downloaded from **any** Debian repository 
 Fedora templates need some special treatment, because the default repository definitions use metalinks.
 You can either change this to use a BASEURL definition, or to make the metalinks return HTTP repos instead of HTTPS links.
 
-You can do this by changing (e.g) `metalink= https://......basearch` to `metalink=http://HTTPS///.....basearch&protocolo=http`. This will make the metalink only return http repositories.
+You can do this by changing (e.g) `metalink= https://......basearch` to `metalink=http://HTTPS///.....basearch&protocol=http`. This will make the metalink only return http repositories.
 
 There is a mirrors list in /usr/lib/apt-cacher-ng/ .
 Copy fedora_mirrors to /etc/apt-cacher-ng
@@ -145,6 +145,13 @@ Read the [manual](https://www.unix-ag.uni-kl.de/~bloch/acng/html/index.html).
 
 ### Updates over Tor or VPN
 Set the netvm for the cacher qube to a Tor or VPN proxy.
+
+
+### Other qubes
+You can also use the proxy with other qubes, besides templates.  
+Because the proxy is listening on port 8082, and you have configured iptables to allow inbound traffic to that port, you can use the proxy from any downstream qube, simply by configuring use of the Proxy in that qube, following whatever is the normal method.
+(You will have to adjust repository definitions to handle HTTPS.)  
+This allows you to have the benefit of caching in normal qubes, and Standalones, without using qrexec.
 
 
 # The simple way:
