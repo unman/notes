@@ -53,8 +53,8 @@ Restart service:
 
 
 ### Using the proxy
-You can use the proxy simply be editing the qrexec policy.
-Create a new policy in dom0 /etc/qubes/policy/30-user.policy:
+You can use the proxy simply by editing the qrexec policy.
+Create a new policy in dom0 /etc/qubes/policy/30-user.policy:  
 `qubes.UpdatesProxy * @type:TemplateVM  @default  allow target=cacher`
 
 Now all templates will attempt to use the caching proxy instead of the default proxy running on sys-net.
@@ -62,23 +62,15 @@ Now all templates will attempt to use the caching proxy instead of the default p
 
 ### Configuring templates.
 Some templates use HTTPS links to repositories. These need special treatment.
+Otherwise the traffic will be encrypted when it reaches the proxy so the proxy will not know what to do.  
+It is possible to "pass through" HTTPS traffic by editing the config file at /etc/apt-cacher-ng/acng.conf. 
+You create a regex which will match the server(s) you want to pass through:
+`PassThroughPattern: debian.org:443$`  
+This will pass though traffic to https://debian.org.
+If you do this you will *not* cache that traffic.
 
-There are two methods:  
-1. 
-Create new file in /etc/apt-cacher-ng/backends_qubes:
-https://yum.qubes-os.org/
-
-Edit /etc/apt-cacher-ng/acng.conf:
-Remap-qubes: http://fake.qubes ; file:backends_qubes
-
-Then in /etc/yum/yum.repos.d, change the repository URL to
-http://fake.qubes/......
-
-Now the qube will use HTTP to the proxy which will use TLS to pick up the
-packages and cache any responses.
-
-2.
-Change the repository definition FROM:
+If you *do* want to cache this traffic then you have to rewrite the repository definition.
+The simplest way to do this is to change the repository definition FROM:
 https://yum.qubes-os.org/
 TO:
 http://HTTPS///yum.qubes-os.org/
@@ -88,8 +80,8 @@ cache any responses.
 This is the recommended approach.
 
 You can make this change in the template by running:  
-`sed -i s^https://^http://HTTPS///^ REPO_DEFINITION`  
-e.g. `sed -i s^https://^http://HTTPS///^ /etc/apt/sources.list`
+`sed -i s^https://^http://HTTPS///^ REPO_DEFINITION`  - e.g:  
+`sed -i s^https://^http://HTTPS///^ /etc/apt/sources.list`
 
 You must make the change in *every defined repository that you want to use*. If you do not then you will see an error message:
 ```
@@ -102,9 +94,16 @@ Invalid response from proxy: HTTP/1.0 403 CONNECT denied (ask the admin to allow
 
 ### Grouping repositories
 apt-cacher-ng has a mechanism for mapping calls to different repositories on to the same cache.
-This is called `mapping` and is described in the excellent [manual](https://www.unix-ag.uni-kl.de/~block/acng/html/index.html).
+This is called `mapping` and is described in the excellent [manual](https://www.unix-ag.uni-kl.de/~bloch/acng/html/index.html).
 There are some predefined mapping lists that you can use.  
 If you check the caches at `/var/cache/apt-cacher-ng` you may see that there are entries for individual repositories. You can edit the mapping files to include them.
+For example, you may set up mapping Fedora repositories by including this line in the config file:
+`Remap-fedora: file:fedora_mirrors` where "fedora_mirrors" is a file containing a list of fedora repositories or URLs.  
+After a while you notice that the cached directories in `/var/cache/apt-cacher-ng` include "fedora" with many cached packages, but also "mirror.telepoint.bg".
+This is a fedora mirror.
+You simply edit the "fedora_mirrors" file to include the name "mirror.telepoint.bg".
+Now requests to that mirror will be dealt with in the main cache directory.
+
 Ideally you want **all** the packages downloaded from **any** Debian repository to be served from the same cache.
 
 ### Fedora
@@ -113,7 +112,7 @@ You can either change this to use a BASEURL definition, or to make the metalinks
 
 You can do this by changing (e.g) `metalink= https://......basearch` to `metalink=http://HTTPS///.....basearch&protocolo=http`. This will make the metalink only return http repositories.
 
-There is a mirrors list in /usr/lib/apt-cacher-ng/
+There is a mirrors list in /usr/lib/apt-cacher-ng/ .
 Copy fedora_mirrors to /etc/apt-cacher-ng
 
 Edit /etc/apt-cacher-ng/acng.conf, to use the mapped data:  
@@ -128,7 +127,7 @@ All this is covered in the manual.
 
 ### Troubleshooting
 
-You can exclude templates from using the proxy by setting a policy line *before* the one that points to cacher in /etc/qubes/policy/30-user.policy.
+As well as using "pass-through" to handle some repositories, you can exclude templates from using the proxy by setting a policy line *before* the one that points to cacher in /etc/qubes/policy/30-user.policy.
 The new line should point named templates to the default system proxy, like this:
 ```
 qubes.UpdatesProxy * fedora-36         @default  allow target=sys-net
@@ -139,9 +138,9 @@ Access logs are available on cacher at `/var/log/apt-cacher-ng`.
 
 You can see the cached data in /var/cache/apt-cacher-ng.
 
-There is also a dashboard available on the caching proxy at http://localhost:8082, which contains useful information about how much data is cached and how often used.
+There is also a dashboard available on the caching proxy at http://localhost:8082, which contains useful information about how much data is cached and how often used, as well as tools to help control the cached data.
 
-Read the [manual](https://www.unix-ag.uni-kl.de/~block/acng/html/index.html).
+Read the [manual](https://www.unix-ag.uni-kl.de/~bloch/acng/html/index.html).
 
 
 ### Updates over Tor or VPN
