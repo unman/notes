@@ -54,7 +54,7 @@ Restart service:
 
 ### Using the proxy
 You can use the proxy simply by editing the qrexec policy.
-Create a new policy in dom0 /etc/qubes/policy/30-user.policy:  
+Create a new policy in dom0 /etc/qubes/policy.d/30-user.policy:  
 `qubes.UpdatesProxy * @type:TemplateVM  @default  allow target=cacher`
 
 Now all templates will attempt to use the caching proxy instead of the default proxy running on sys-net.
