@@ -1,0 +1,122 @@
+<html><body>
+<h1>Simple qube set-up in Qubes</h1>
+
+There's a long standing issue that Qubes users face: installing software and setting up new qubes.
+New users in particular find this difficult to deal with.
+<br>
+Look at the repeated posts in the Forum about how to set up a VPN.
+It's probably one of the major problems that new users have, besides learning to install and configure software in templates, so that they can use it a qube.
+Again, look at the repeated "I installed X in my qube, and it disappeared when I restarted" posts.
+Many of the guides that are produced involve users copying shell scripts into dom0 or templates and running them.
+<p>
+We've been using simple salt formulas to help users with software installation and setup for some time.
+There's a long standing <a href="https://github.com/QubesOS/qubes-issues/issues/1939">issue</a> in GitHub about how to handle such formulas.
+I think we should distribute them as signed packages, with scripts to implement the states when the package is installed.
+Users don't need to understand salt, or any of the complexity of working in Qubes.
+<p>
+What does this mean in practice?
+<br>
+Instead of a user finding a guide online, wondering whether to create a new template or qubes, copying code or scripts in to dom0 or a template, and running them, they just install a package.
+<br>
+Here's an example:
+<br>
+Let's say a user wants to set up a caching proxy, perhaps following my notes <a href="https://github.com/unman/notes/blob/master/apt-cacher-ng">here</a>
+They clone a template, install software in to the template, (remembering to mask the service in the template), create a qube, configure the qube, configure bind-dirs in the new qube, set up a new policy in dom0, and then change the repo definitions in all the templates so that the proxy can handle TLS requests.
+<br>
+Instead they install the 3isec-qubes-cacher package, and it's done for them.
+A new caching proxy is created and the system reconfigured to use it.
+<p>
+<h2>Trying it out</h2>
+To test the water, we are making available a test repository, and a simple tool to access it.
+<br>
+The repository definition is:
+<pre>
+[3isec-dom0-current]
+name = 3isec Qubes Dom0 Repository (updates)
+baseurl = https://qubes.3isec.org/rpm/r$releasever/current/dom0/fc32
+skip_if_unavailable=False
+enabled = 1
+metadata_expire = 6h
+gpgcheck = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-unman
+</pre>
+<br>
+Create a file with this content in /etc/yum.repos.d in dom0.
+<p>
+All packages are signed with my Qubes OS Signing key.
+<br>
+You'll need to get this from a keyserver, or two, to make sure all is fine:
+<br>
+<a href="https://keyserver.ubuntu.com/pks/lookup?search=0x8B3F30F9C8C0C2EF&fingerprint=on&op=index">keyserver.ubuntu.com</a>
+or,
+<a href="http://pgp.mit.edu/pks/lookup?search=0x8B3F30F9C8C0C2EF">pgp.mit.edu</a>
+<br>
+<pre>
+pub   rsa4096 2016-06-25 [SC]
+      4B1F 400D F256 51B5 3C41  41B3 8B3F 30F9 C8C0 C2EF
+uid           [ unknown] unman (Qubes OS signing key) <unman@thirdeyesecurity.org>
+sub   rsa4096 2016-06-27 [S] [expires: 2024-06-30]
+sub   rsa4096 2016-06-25 [E]
+</pre>
+
+<br>
+You can also check the Qubes users mailing list or look on <a href="https://github.com/unman/unman">github</a>.
+<p>
+Once you have copies of the key, check the fingerprint:
+<pre>
+gpg -n --import --import-options import-show <i>unman.pub</i>
+</pre>
+replacing <i>unman.pub</i> with the path to the key.
+<p>
+When you are happy, copy the key in to dom0:
+<br>
+qvm-run -p QUBE_WHERE_YOU_DOWNLOADED_KEY 'cat PATH_TO_KEY' > RPM-GPG-KEY-unman
+<br>
+sudo mv RPM-GPG-KEY-unman /etc/pki/rpm-gpg/
+<p>
+You can download a package with a basic tool <a href="3isec-qubes-task-manager-0.1-1.x86_64.rpm>here</a>.
+<br>
+Download that package, check the signature, transfer it to dom0, and install in dom0.
+<p>
+To run, open a terminal in dom0. There's a command line tool, qubes-task, and a primitive GUI, qubes-task-gui.
+<br>
+Use should be obvious.
+<p>
+
+<h2>Available packages</h2>
+At the moment we have the following:
+<h3>split-gpg</h3>
+Sets up split-gpg
+<h3>sys-ssh-agent</h3>
+This provides a form of split-ssh, where you can store ssh keys in sys-ssh-agent, and use them from other qubes.
+It's ideal where you have a number of keys and you want differnet qubes to be able to access differnet combinations of keys.
+You can configure differnet ssh-agents and allocate keys to them, and the control access to those agents using a standard qrexec policy.
+<h3>cacher</h3>
+Creates a caching proxy, working out the box to cache Debian, Fedora, Arch and Ubuntu packages.<br>
+Templates are automaticlaly configured to use the proxy, and repo definitions altered to allow for access to https repositories.
+<h3>mullvad-vpn</h3>
+Thanks to the folk at Mullvad VPN this creates a qube ready for use with wireguard.<br>
+A set up program is added to the Qubes Menu to help configuration.
+All the user has to do is install the package, copy the wireguard configuration file (or zipped files) to the MullvadVPN qube, and run "Setup Mullvad VPN" from the Qubes menu.
+<h3>sys-vpn</h3>
+This creates a standard openvpn gateway, with a script to help with setup.
+Based on <a href="https://github.com/Qubes-Community/Contents/blob/master/docs/configuration/vpn.md">the classic</a>
+<h3>pihole</h3>
+Creates a pihole standalone as a drop in replacement for sys-firewall.
+<h3>sys-multimedia</h3>
+Creates a "media" qube for storage of media files, and a disposable called "multimedia". The "media" qube is configured so that opening a file will launch multimedia, and play the file in the right app.
+By default multimedia is offline. This means that you can (fairly) safely work with content from untrusted sources.
+You can also edit files in the multimedia qube, using qvm-open-in-dvm as normal.
+The multimedia qube will automatically close when not in use.
+<h3>mutt</h3>
+This creates a mutt qube, with offline imap, notmuch,ssh,rsync, installed and configured.
+A set up script is included to help users with configuration.
+
+<p>
+More detailed information about these packages can be seen in the qubes-task tools.<br>
+We'll be adding more packages soon.
+<p>
+All these packages use <b>new</b> templates, based off debian-11-minimal.
+The source code is on GitHub - <a href="https://github.com/unman/qubes-task">qubes-task</a>, and in the <a href="https://github.com/unman/shaker">shaker</a>.
+<p>
+unman
