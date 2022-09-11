@@ -1,6 +1,6 @@
 iso has unattend.inf in /reactos
 
-* unattend.inf
+## unattend.inf
 ```
 
 [Unattend]
@@ -80,10 +80,10 @@ ProductOption = 0
 ; YResolution = 900
 ; VRefresh = 0
 ```
-Mount the install image.
-Copy the contents to a directory.
-Edit the unattend.inf file
-At a minimum, set
+Mount the install image.  
+Copy the contents to a directory.  
+Edit the unattend.inf file  
+At a minimum, set  
 `UnattendSetupEnabled = yes`
 
 Perhaps also set Name, Computer Name, and Password:
@@ -105,4 +105,4 @@ VRefresh = 0
 
 Other options are best left alone.
 
-Other Options, except 
+Using the unattended install results in ReactOS showing the driver install on boot instead of the ReactOS logo.
