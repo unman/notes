@@ -31,7 +31,7 @@ Format the volume:
 Mount it where needed, and make sure permissions are correct:  
 ```
 sudo mount /dev/qubes_dom0/extra_space /var/lib/qubes/vm-templates/parrot
-sudo chown -R /var/lib/qubes/vm-templates/parrot
+sudo chown -R root:qubes /var/lib/qubes/vm-templates/parrot
 ```
 
 When you have finished the install you can unmount the volume.  
