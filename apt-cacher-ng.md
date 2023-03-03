@@ -19,6 +19,16 @@ systemctl mask apt-cacher-ng
 ```
 Shut down template-cacher.
 
+#### If want to be the DOM0 update proxy
+Open the template-cacher terminal - 
+`qvm-run template-cacher terminal`
+
+In template-cacher install the qubes-dom0-update package, running as root:
+```
+apt-get install qubes-core-agent-dom0-updates
+```
+Shutdown template-cacher.
+
 ### Create and configure the proxy
 
 Create a qube and give it plenty of space on the private volume:
