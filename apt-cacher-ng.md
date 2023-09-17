@@ -158,4 +158,4 @@ This allows you to have the benefit of caching in normal qubes, and Standalones,
 Follow the instructions at https://qubes.3isec.org/tasks.html to install qubes-task.  
 Select the cacher package and install it.  
 The caching proxy will be created, and configured.
-All existing templates will be configured to use the proxy.
+All existing templates will be configured to use the proxy outside of Whonix templates
