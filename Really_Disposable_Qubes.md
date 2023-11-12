@@ -12,6 +12,7 @@ mkdir /home/user/tmp
 sudo mount -t tmpfs -o size=2G new /home/user/tmp/
 qvm-pool add -o revisions_to_keep=1 -o dir_path=/home/user/tmp/ newer file 
 qvm-create new -P newer -t debian-11  -l purple --property netvm=tor
+qvm-volume set new:root rw False
 qvm-run new firefox-esr
 ```
 
