@@ -10,7 +10,7 @@ It can be configured to support Fedora, Suse, Gentoo, and \*BSD
 
 ###  INSTALL 
 Create a new Debian based template -  
-`qvm-clone debian-11-minimal template-cacher`
+`qvm-clone debian-12-minimal template-cacher`
 
 In template-cacher install the software, by running as root:  
 ```
@@ -50,13 +50,18 @@ Add these lines:
 ```
 systemctl unmask apt-cacher-ng
 systemctl start apt-cacher-ng
-/sbin/iptables -I INPUT -p tcp --dport 8082 -j ACCEPT
 ```
+In 4.1, you should also add:  
+`/sbin/iptables -I INPUT -p tcp --dport 8082 -j ACCEPT`
+
+In 4.2, you instead add:
+`/usr/sbin/nft insert rule qubes custom-input tcp dport 8082 accept`
 
 Restart cacher.
 
 In /etc/apt-cacher-ng/acng.conf:
-edit the `Port:` line to say `Port:8082`
+edit the `Port:` line to say `Port:8082`  
+edit the `AllowUserPorts` line to say `AllowUserPorts: 80 443`
 
 Restart service:  
 `systemctl restart apt-cacher-ng`
@@ -68,6 +73,12 @@ Create a new policy in dom0 /etc/qubes/policy.d/30-user.policy:
 `qubes.UpdatesProxy * @type:TemplateVM  @default  allow target=cacher`
 
 Now all templates will attempt to use the caching proxy instead of the default proxy running on sys-net.
+
+You can also connect to the caching proxy using Qubes networking.
+For the qube, set netvm to the caching proxy, or have the qube downstream from
+the proxy, and then configure the qube using the appropriate method to use
+`PROXY_IP:8082`. The method will vary depending on the OS in the template or
+qube.
 
 
 ### Configuring templates.
