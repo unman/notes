@@ -1,7 +1,7 @@
 <html><body>
 <h1>Simple qube set-up in Qubes</h1>
 
-There's a long standing issue that Qubes users face: insta software and setting up new qubes.
+There's a long standing issue that Qubes users face: installing software and setting up new qubes.
 New users in particular find this difficult to deal with.
 <br>
 Look at the repeated posts in the Forum about how to set up a VPN.
@@ -34,13 +34,16 @@ The repository definition is:
 <pre>
 [3isec-dom0-current]
 name = 3isec Qubes Dom0 Repository (updates)
-baseurl = https://qubes.3isec.org/rpm/r$releasever/current/dom0/fc32
+baseurl = https://qubes.3isec.org/rpm/r$releasever/current/dom0/fc37
 skip_if_unavailable=False
 enabled = 1
 metadata_expire = 6h
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-unman
 </pre>
+<br>
+(For 4.1, change the baseurl line to specify fc32 instead of fc37.)
+<br>
 Create a file in dom0 with this content at /etc/yum.repos.d/3isec-dom0.repo <p>
 All packages are signed with my Qubes OS Signing key.
 <br>
@@ -70,7 +73,8 @@ sub   rsa4096 2016-06-25 [E]
 </pre>
 In particular, check that the output from your command contains the fingerprint <i>4B1F 400D F256 51B5 3C41  41B3 8B3F 30F9 C8C0 C2EF</i>
 <p>
-When you are happy, copy the key in to dom0:
+When you are happy, copy the key in to dom0.
+<br>In dom0:
 <pre>
 qvm-run -p QUBE_WHERE_YOU_DOWNLOADED_KEY 'cat PATH_TO_KEY' > RPM-GPG-KEY-unman
 sudo mv RPM-GPG-KEY-unman /etc/pki/rpm-gpg/
@@ -81,29 +85,53 @@ Add the key to the rpm keyring:
 sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-unman 
 </pre>
 <p>
-<h3>Installing the tool</h3>
-You can download a package with a basic tool <a href="3isec-qubes-task-manager-0.1-1.x86_64.rpm">here</a>.
+<h3>Installing the tool </h3>
+Once you have set up the repository you can then install the tool:
+<pre>
+sudo qubes-dom0-update 3isec-qubes-task-manager
+</pre>
+
+<h3>Installing the tool or other packages manually</h3>
+You can also download the packages <a href="rpm/r4.2/current/dom0/fc37/">here</a>.
 <br>
-Download that package, check the signature, transfer it to dom0, and install in dom0.
+In summary: Download the package you want, check the signature, transfer it to dom0, and install in dom0.
+<p>
+In detail:
 <br>
-Let's say you have downloaded that package to Downloads in disp999.
-<br>
+Let's say you have downloaded the package to Downloads in disp999.
+Download my pgp key also.
+Check the pgp key is valid, as above.
+<p>
+Import the pgp key into gpg and the rpm database:
+<pre>
+gpg --import DOWNLOADED_KEY
+rpm --import DOWNLOADED_KEY
+</pre>
 Open a terminal window in disp999, and check the signature:
 <pre>
 cd Downloads
-rpm -qi 3isec-qubes-task-manager-0.1-1.x86_64.rpm
+rpm -qi PACKAGE_NAME
 </pre>
 On the Signature line you should see Key ID fdd1b8244731b36c.
-This is the signing sub key of my Qubes OS signing key - you can confirm this with <pre>gpg --edit-key unman</pre>
+This is the signing sub key of my Qubes OS signing key - you can confirm this with: <pre>gpg --edit-key unman</pre>
 <p>
+You can also check the validity of the package:
+<pre>
+rpm -K PACKAGE_NAME
+</pre>
+You should see "SIGNATURES: OK"
+<p>
+
 To copy the file to dom0, open a terminal window in dom0 and run:
 <pre>
-qvm-run -p disp999 'cat Downloads/3isec-qubes-task-manager-0.1-1.x86_64.rpm' > 3isec-qubes-task-manager-0.1-1.x86_64.rpm
+qvm-run -p disp999 'cat PATH_TO_PACKAGE' > PACKAGE_NAME
 </pre>
 Then install the package:
 <pre>
-sudo dnf install ./3isec-qubes-task-manager-0.1-1.x86_64.rpm
+sudo dnf install ./PACKAGE_NAME
 </pre>
+
+It's <b>much</b> simpler to add the repository as set out above, and to use the tool.
 
 <h3> Running the tool</h3>
 To run, open a terminal in dom0. There's a command line tool, qubes-task, and a primitive GUI, qubes-task-gui.
@@ -112,33 +140,39 @@ Use should be obvious.
 <p>
 
 <h2>Available packages</h2>
-At the moment we have the following:
+Among the available packages are the following:
 <h3>split-gpg</h3>
 Sets up split-gpg
 <h3>sys-ssh-agent</h3>
 This provides a form of split-ssh, where you can store ssh keys in sys-ssh-agent, and use them from other qubes.
 It's ideal where you have a number of keys and you want differnet qubes to be able to access differnet combinations of keys.
-You can configure differnet ssh-agents and allocate keys to them, and the control access to those agents using a standard qrexec policy.
+You can configure different ssh-agents and allocate keys to them, and then control access to those agents using a standard qrexec policy.
 <h3>cacher</h3>
 Creates a caching proxy, working out the box to cache Debian, Fedora, Arch and Ubuntu packages.<br>
 Templates are automaticlaly configured to use the proxy, and repo definitions altered to allow for access to https repositories.
 <h3>mullvad-vpn</h3>
-Thanks to the folk at Mullvad VPN this creates a qube ready for use with wireguard.<br>
-A set up program is added to the Qubes Menu to help configuration.
-All the user has to do is install the package, copy the wireguard configuration file (or zipped files) to the MullvadVPN qube, and run "Setup Mullvad VPN" from the Qubes menu.
+Thanks to the folk at Mullvad VPN this creates a qube ready for use with varieties of Mullvad VPN.<br>
+The package installs a Mullvad Proxy with the Mullvad GUI to make it easy to set up the VPN.
+It also creates a disposable template, so you can run disposables which have the Mullvad GUI and Mullvad browser pre-installed.
+You can use the Mullvad browser without using a Mullvad VPN - it's been developed with the Tor Browser team, to provide secure browsing out of the box.
+<h3>proton-vpn</h3>
+This creates a qube ready for use with varieties of Proton VPN.<br>
 <h3>sys-vpn</h3>
 This creates a standard openvpn gateway, with a script to help with setup.
 Based on <a href="https://github.com/Qubes-Community/Contents/blob/master/docs/configuration/vpn.md">the classic</a>
 <h3>pihole</h3>
 Creates a pihole standalone as a drop in replacement for sys-firewall.
+Pihole aims to block ads and trackers.
 <h3>sys-multimedia</h3>
 Creates a "media" qube for storage of media files, and a disposable called "multimedia". The "media" qube is configured so that opening a file will launch multimedia, and play the file in the right app.
 By default multimedia is offline. This means that you can (fairly) safely work with content from untrusted sources.
 You can also edit files in the multimedia qube, using qvm-open-in-dvm as normal.
 The multimedia qube will automatically close when not in use.
 <h3>mutt</h3>
-This creates a mutt qube, with offline imap, notmuch,ssh,rsync, installed and configured.
-A set up script is included to help users with configuration.
+This creates a mutt qube, with offline imap, notmuch, ssh, rsync, installed and configured.
+A set up script is included to help users with basic mutt configuration.
+<h3>reader</h3>
+This package provides a template configured with a range of useful software of particular help to terminal users.
 
 <p>
 More detailed information about these packages can be seen in the qubes-task tools.<br>

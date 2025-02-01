@@ -1,0 +1,175 @@
+<html><body>
+<h1>Qubes templates</h1>
+
+We currently provide these templates:
+<br>
+<a href="https://qubes.3isec.org/rpm/r4.2/templates/qubes-template-blackarch-4.2.0-202406081813.noarch.rpm"> BlackArch</a></br>
+<a href="https://qubes.3isec.org/rpm/r4.2/templates/qubes-template-debian-13-minimal-4.2.0-202405271337.noarch.rpm"> debian-testing-minimal</a><br>
+<a href="https://qubes.3isec.org/rpm/r4.2/templates/qubes-template-jammy-minimal-4.2.0-202405182317.noarch.rpm"> Ubuntu 2022.4 minimal</a><br>
+<a href="https://qubes.3isec.org/rpm/r4.2/templates/qubes-template-kicksecure-17-4.2.0-202501300155.noarch.rpm">Kicksecure-17</a><br>
+<a href="https://qubes.3isec.org/rpm/r4.2/templates/qubes-template-noble-minimal-4.2.0-202405211137.noarch.rpm"> Ubuntu 2024.4 minimal</a><br>
+<a href="https://qubes.3isec.org/rpm/r4.2/templates/qubes-template-template-parrot-4.2.0-202405300252.noarch.rpm"> Parrot template</a><br>
+<p>
+
+All templates are signed with my Qubes OS Signing key:
+<pre>
+pub   rsa4096 2016-06-25 [SC]
+      4B1F 400D F256 51B5 3C41  41B3 8B3F 30F9 C8C0 C2EF
+uid           [ unknown] unman (Qubes OS signing key) <unman@thirdeyesecurity.org>
+sub   rsa4096 2016-06-27 [S] [expires: 2026-06-30]
+sub   rsa4096 2016-06-25 [E]
+</pre>
+
+
+<br>
+You can read about how to get a copy of the key, and how to validate it <a href="../index.html">here</a>.
+<br>
+<h3>Manual Installation</h3>
+You will need to copy the key in to dom0:
+<br>
+<code>
+qvm-run -p  qube 'cat PATH_TO_KEY ' > RPM-GPG-KEY-unman
+</code>
+<br>
+and then move it into place:
+<br>
+<code>
+sudo mv RPM-GPG-KEY-unman  /etc/qubes/repo-templates/keys/RPM-GPG-KEY-unman
+</code>
+<p>
+Download the template you want to use, and copy it into dom0:
+<br>
+<code>
+qvm-run -p  QUBE 'cat PATH_TO_DOWNLOADED_TEMPLATE ' > TEMPLATE_PACKAGE_NAME
+</code>
+<br>
+replacing <code>TEMPLATE_PACKAGE_NAME</code> with a name of your choice.
+<br>
+<br>
+You may want to check the signature before copying the package to dom0 by (e.g):
+<br>
+<code>
+rpm -qi TEMPLATE_PACKAGE_NAME
+</code>
+<br>
+This will show you the key that signed the package, and this should be the same as the short keyID of the unman key.
+<br>
+<br>
+Install the template using qvm-template in dom0:
+<br>
+<code>
+qvm-template --keyring /etc/qubes/repo-templates/keys/RPM-GPG-KEY-unman install FULL_PATH_TO_DOWNLOADED_TEMPLATE
+</code>
+<br>
+The qvm-template call will check that the package is signed by the key you specify.
+
+
+<h3>Using qvm-template</h3>
+It is also possible to use the native Qubes tools for template management.
+<br>
+To do this you will need to copy the key to dom0, as above, and move it:
+<br>
+<code>
+sudo mv RPM-GPG-KEY-unman /etc/qubes/repo-templates/keys/RPM-GPG-KEY-unman
+</code>
+<br>
+<br>
+
+You will also need to create the repository definition.
+<br>
+Create a file at /etc/qubes/repo-templates/3isec-templates.repo, with this content:
+<pre>
+<code>
+[3isec-templates]
+name = 3isec Qubes Templates Repository (updates)
+baseurl = https://qubes.3isec.org/rpm/r$releasever/templates
+skip_if_unavailable = False
+enabled = 1
+metadata_expire = 6h
+gpgcheck = 1
+gpgkey = file:////etc/qubes/repo-templates/keys/RPM-GPG-KEY-unman
+</code>
+</pre>
+
+Now you can use qvm-template or qvm-template-gui, as normal.
+
+
+
+
+<h2>Rolling distros - Parrot, Arch, Kali</h2>
+Templates like Parrot or Kali are based on Debian testing, and are rolling distributions.
+<br>
+To avoid breakage when updating, the core Qubes packages should be on hold. 
+<br>
+<b>This means that they will not be updated.</b>
+<br>
+You can confirm this by running <code>apt-mark showhold</code> in the template.
+<br>
+<code>apt-mark unhold </code> will remove the hold, and allow you to update the Qubes packages.
+<br>
+I suggest you restore the hold <code>apt-mark hold </code> to make sure that the Qubes packages are not removed when updating other packages.
+<br>
+<br>
+So, while updating a template you will see that some packages cannot be upgraded because they will conflict with the Qubes packages.
+<br>
+Periodically, in the template, remove the hold on the Qubes packages. Update the package list with <code>apt update</code>  and then update the Qubes packages - either manually with <code>apt install... </code>, or using a manager like aptitude, and selecting Qubes packages for upgrade.
+<br>
+Once the upgrade has been completed, put the Qubes packages back on hold, and upgrade again.
+<p>
+Undoubtedly a pain, but less than the pain of breaking your qubes, and having to crawl backwards to get them working again.
+<br>
+Then again, if you use aptitude you would be able to see what changes would be made, opt to retain the Qubes packages - <b> always keep the Qubes packages</b>, and avoid breakage that way.
+This depends on you looking to see what changes will be made and acting accordingly.
+Using  <code>apt-mark hold </code> will take some pressure off.
+<p>
+<h3> BlackArch tools </h3>
+The BlackArch template is minimal, but is configured with the BlackArch repositories ready to use.
+You may want to clone the template so that you have different templates using different combinations of tools. 
+Or you can install all the tools in one template.
+<br>
+You can install packages individually, or use the meta-packages - they begin with <i>blackarch-</i>: a helpful guide is <a href="https://jonathansblog.co.uk/blackarch-pacman-package-groups-for-tools">here</a>.
+For example, <code> sudo pacman -S blackarch </code> will install <b>all</b> the BlackArch tools. You probably dont want that. <code> sudo pacman -S blackarch-scanner </code> will install some useful scanning tools.
+<h3> Parrot tools </h3>
+The Parrot template is minimal, but is configured with parrot-core. 
+You may want to clone the template so that you have different templates using different combinations of Parrot tools. 
+Or you can install all the tools in one template.
+<br>
+You can install packages individually, or use the meta-packages - they begin with <i>parrot-tools-</i>: e.g. <i>parrot-tools-pwn</i> , <i>parrot-tools-infogathering</i>, or <i>parrot-tools-full</i>. 
+Using aptitude will help you select the packages you want and resolve any issues that may arise.
+<H2>Installing large templates</H2>
+In 4.2, dom0 is pegged at 20G by default.
+<br>
+This means that you will not be able to install the larger templates, like parrot, without  taking some action.
+<br>
+The easiest thing to do is to increase the size of dom0. On a default install you can do this simply enough by:
+<br>
+<code>
+	sudo lvresize --size 40G /dev/qubes_dom0/root
+<br>
+	sudo resize2fs /dev/mapper/qubes_dom0-root
+</code>
+<p>
+For more details and options, look <a href="https://github.com/unman/notes/blob/master/Installing_Templates_Qubes_4.1.md">here</a>.
+<p>
+
+<H2>Repository definitions and apt-cacher-ng</H2>
+Very often, the repository definitions in these templates are modified to enable use of the apt-cacher-ng caching proxy.
+Instead of <code>https://</code> the definitions have <code>http://HTTPS///</code> - this is so that the caching proxy can see the request, and then connect to the repository over https.
+You can read about this <a href="https://www.unix-ag.uni-kl.de/~bloch/acng/html/howtos.html#ssluse">here</a>
+<br>
+If you use apt-cacher-ng, that's fine. Everything will just work&trade;.
+<br>
+If you do not use apt-cacher-ng, then you can install it using <a href="https://qubes.3isec.org/tasks.html">this tool</a>.
+<br>
+If you do not use apt-cacher-ng, or you do not want to use it for <em>this</em> template, edit the repository definitions, replacing 
+<code>http://HTTPS///</code> with <code>https://</code> 
+<br>
+<br>
+<em>Always check that the repository definitions suit your use case.</em>
+<p>
+
+
+unman
+
+</body>
+</html>
